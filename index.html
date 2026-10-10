@@ -343,39 +343,66 @@
         </div>
     </section>
     <section class="card" style="grid-column: 1 / -1;">
-  <section class="card" style="grid-column: 1 / -1;">
     <h2>🕋 البث المرئي المباشر للحرم المكي</h2>
     <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-top: 15px; background: #000;">
-        <!-- تم ضبط الخصائص لمنع التقديم/الترجيع والتنزيل -->
         <video id="haram-video" controls controlsList="nodownload noplaybackrate" playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain;"></video>
     </div>
-    <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">بث حي ومباشر لحظة بلحظة من المسجد الحرام 🌙</p>
+    
+    <!-- شريط التحكم السفلي (النص + قائمة اختيار الجودة) -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; flex-wrap: wrap; gap: 10px;">
+        <p style="color: var(--text-light); font-size: 0.9rem; margin: 0;">بث حي ومباشر لحظة بلحظة من المسجد الحرام 🌙</p>
+        
+        <div style="display: flex; align-items: center; gap: 6px;">
+            <label for="quality-select" style="font-size: 0.85rem; font-weight: bold; color: var(--text-main);">الجودة:</label>
+            <select id="quality-select" style="padding: 5px 10px; border-radius: 6px; background: var(--bg-color); color: var(--text-main); border: 1px solid var(--text-light); font-size: 0.85rem; font-family: 'Cairo', sans-serif; cursor: pointer;">
+                <option value="-1">تلقائي (Auto)</option>
+            </select>
+        </div>
+    </div>
 </section>
 
-<!-- مكتبة تشغيل البث المباشر مع ضبط السرعة والجودة -->
+<!-- مكتبة تشغيل البث المباشر مع إدارة الجودات -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
     var video = document.getElementById('haram-video');
+    var qualitySelect = document.getElementById('quality-select');
     var videoSrc = 'https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8';
 
     if (Hls.isSupported()) {
         var hls = new Hls({
             enableWorker: true,
-            lowLatencyMode: true,          // تفعيل وضع الاستجابة السريعة للحد من التأخير
-            maxBufferLength: 30,           // زيادة التخزين المؤقت لعدم التقطيع
-            liveSyncDurationCount: 3,       // المزامنة فوراً مع اللحظة الحالية للبث
-            startLevel: -1                 // اختيار أفضل جودة تناسب سرعة الاتصال فوراً
+            lowLatencyMode: true,
+            maxBufferLength: 30
         });
+        
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
-        
-        // عند الضغط على شريط الفيديو يتم التأكد من البقاء في البث الحي دائماً
+
+        // عند تحميل بيانات البث، نقوم بملء قائمة الجودات تلقائياً
+        hls.on(Hls.Events.MANIFEST_PARSED, function(event, data) {
+            qualitySelect.innerHTML = '<option value="-1">تلقائي (Auto)</option>';
+            
+            data.levels.forEach((level, index) => {
+                let qualityLabel = level.height ? `${level.height}p` : `جودة ${index + 1}`;
+                let option = document.createElement('option');
+                option.value = index;
+                option.textContent = qualityLabel;
+                qualitySelect.appendChild(option);
+            });
+        });
+
+        // تغيير الجودة فور اختيار المستخدم من القائمة
+        qualitySelect.addEventListener('change', function() {
+            hls.currentLevel = parseInt(qualitySelect.value);
+        });
+
+        // منع الترجيع والبقاء في اللحظة الحية دائماً
         video.addEventListener('seeking', function() {
-            var delta = video.currentTime - (video.duration - 1);
-            if (delta < -5) {
-                video.currentTime = video.duration - 1; // إرجاعه فوراً للبث المباشر اللحظي ومنع الترجيع
+            if (video.currentTime < video.duration - 2) {
+                video.currentTime = video.duration - 1;
             }
         });
+
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc;
     }
