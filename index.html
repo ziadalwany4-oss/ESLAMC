@@ -343,24 +343,39 @@
         </div>
     </section>
     <section class="card" style="grid-column: 1 / -1;">
+  <section class="card" style="grid-column: 1 / -1;">
     <h2>🕋 البث المرئي المباشر للحرم المكي</h2>
     <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; overflow: hidden; border-radius: 8px; margin-top: 15px; background: #000;">
-        <video id="haram-video" controls autoplay muted playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;"></video>
+        <!-- تم ضبط الخصائص لمنع التقديم/الترجيع والتنزيل -->
+        <video id="haram-video" controls controlsList="nodownload noplaybackrate" playsinline style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0; object-fit: contain;"></video>
     </div>
-    <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">بث حي مرئي مباشر من المسجد الحرام 🌙</p>
+    <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">بث حي ومباشر لحظة بلحظة من المسجد الحرام 🌙</p>
 </section>
 
-<!-- إضافة مكتبة تشغيل البث المرئي المباشر HLS -->
+<!-- مكتبة تشغيل البث المباشر مع ضبط السرعة والجودة -->
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 <script>
     var video = document.getElementById('haram-video');
-    // رابط بث مرئي مباشر يدعم التشغيل الخارجي
     var videoSrc = 'https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8';
-    
+
     if (Hls.isSupported()) {
-        var hls = new Hls();
+        var hls = new Hls({
+            enableWorker: true,
+            lowLatencyMode: true,          // تفعيل وضع الاستجابة السريعة للحد من التأخير
+            maxBufferLength: 30,           // زيادة التخزين المؤقت لعدم التقطيع
+            liveSyncDurationCount: 3,       // المزامنة فوراً مع اللحظة الحالية للبث
+            startLevel: -1                 // اختيار أفضل جودة تناسب سرعة الاتصال فوراً
+        });
         hls.loadSource(videoSrc);
         hls.attachMedia(video);
+        
+        // عند الضغط على شريط الفيديو يتم التأكد من البقاء في البث الحي دائماً
+        video.addEventListener('seeking', function() {
+            var delta = video.currentTime - (video.duration - 1);
+            if (delta < -5) {
+                video.currentTime = video.duration - 1; // إرجاعه فوراً للبث المباشر اللحظي ومنع الترجيع
+            }
+        });
     } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
         video.src = videoSrc;
     }
