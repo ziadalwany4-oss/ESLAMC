@@ -301,7 +301,6 @@
             box-shadow: 0 4px 12px rgba(11, 60, 41, 0.2);
         }
 
-        /* شريط إنجاز الأذكار المطور والأنيق */
         .progress-wrapper {
             margin-bottom: 15px;
             text-align: right;
@@ -597,7 +596,6 @@ const quranVerses = [
     { text: "وَاذْكُرْ رَبَّكَ كَثِيرًا وَسَبِّحْ بِالْعَشِيِّ وَالْإِبْكَارِ", ref: "[سورة آل عمران: 41]" }
 ];
 
-// أذكار الصباح كاملة بدون اختصار
 const sabahAdhkar = [
     { text: "أَصْبَحْنَا وَأَصْبَحَ المُلْكُ للهِ، وَالحَمْدُ للهِ، لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير. رَبِّ أسْأَلُكَ خَيْرَ ما في هذا اليَوْمِ وَخَيْرَ ما بَعْدَهُ، وَأَعُوذُ بِكَ من شَرِّ ما في هذا اليَوْمِ وَشَرِّ ما بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الكَسَلِ وَسُوءِ الكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ في النَّارِ وَعَذَابٍ في القَبْرِ.", count: 1, ref: "رواه مسلم" },
     { text: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.", count: 1, ref: "رواه الترمذي" },
@@ -619,7 +617,6 @@ const sabahAdhkar = [
     { text: "قراءة سورة الإخلاص، وفلق، والناس (ثلاث مرات لكل سورة)", count: 3, ref: "رواه أبو داود والترمذي" }
 ];
 
-// أذكار المساء كاملة بدون اختصار
 const masaaAdhkar = [
     { text: "أَمْسَيْنَا وَأَمْسَى المُلْكُ للهِ، وَالحَمْدُ للهِ، لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير. رَبِّ أسْأَلُكَ خَيْرَ ما في هذه اللَّيْلَةِ وَخَيْرَ ما بَعْدَها، وَأَعُوذُ بِكَ من شَرِّ ما في هذه اللَّيْلَةِ وَشَرِّ ما بَعْدَها، رَبِّ أَعُوذُ بِكَ مِنَ الكَسَلِ وَسُوءِ الكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ في النَّارِ وَعَذَابٍ في القَبْرِ.", count: 1, ref: "رواه مسلم" },
     { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ المَصِيرُ.", count: 1, ref: "رواه الترمذي" },
@@ -720,7 +717,7 @@ function formatTime(timeStr) {
     let h = parseInt(hours);
     let period = h >= 12 ? 'م' : 'ص';
     h = h % 12 || 12;
-    return `${h}:${minutes}${period}`;
+    return `${h}:${minutes} ${period}`;
 }
 
 function startPrayerCountdown() {
@@ -769,11 +766,10 @@ function startPrayerCountdown() {
         if (hoursLeft > 0) timeStr += `${hoursLeft} ساعة و `;
         timeStr += `${minsLeft} دقيقة و ${secsLeft} ثانية`;
 
-        document.getElementById('next-prayer-text').innerHTML = `متبقي على صلاة <span>${nextPrayer.name}</span>:${timeStr}`;
+        document.getElementById('next-prayer-text').innerHTML = `متبقي على صلاة <span>${nextPrayer.name}</span>: ${timeStr}`;
     }, 1000);
 }
 
-// إنشاء AudioContext خفيف وإغلاقه فوراً لمنع التعليق عند الضغط السريع
 function playClickSound() {
     try {
         const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -863,4 +859,103 @@ function renderAdhkar(list, type) {
         const div = document.createElement('div');
         div.style.cssText = "background: rgba(0, 0, 0, 0.02); padding: 12px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.05);";
         div.innerHTML = `
-            <p style="font-weight: 600; margin-bottom: 8
+            <p style="font-weight: 600; margin-bottom: 8px; font-size: 0.95rem;">${dhkar.text}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <small style="color: var(--text-light); font-size: 0.8rem;">${dhkar.ref}</small>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span id="c-${type}-${index}" style="font-weight: bold; color: var(--primary-color); font-size: 1.05rem;">${savedCount}</span>
+                    <button class="btn-primary dhkar-btn" data-type="${type}" data-index="${index}" style="padding: 5px 14px; width: auto; font-size: 0.85rem; background-color: ${savedCount === 0 ? '#10b981' : 'var(--primary-color)'};">${savedCount > 0 ? 'قرأت الذكر 👆' : '✨ تم'}</button>
+                </div>
+            </div>`;
+        adhkarContainer.appendChild(div);
+    });
+
+    updateAdhkarProgress(list, type);
+
+    if (showAllAdhkar) {
+        toggleAdhkarBtn.innerHTML = '⬆️ إخفاء وطي القائمة';
+    } else {
+        toggleAdhkarBtn.innerHTML = `⬇️ عرض المزيد من الأذكار (${list.length - 5} أذكار أخرى)`;
+    }
+
+    document.querySelectorAll('.dhkar-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            let t = e.target.dataset.type, i = e.target.dataset.index, k = `${t}_dhkar_${i}`;
+            let arr = t === 'sabah' ? sabahAdhkar : masaaAdhkar;
+            let val = localStorage.getItem(k) !== null ? parseInt(localStorage.getItem(k)) : arr[i].count;
+            if (val > 0) {
+                val--;
+                localStorage.setItem(k, val);
+                document.getElementById(`c-${t}-${i}`).textContent = val;
+                updateAdhkarProgress(arr, t);
+                if (val === 0) { 
+                    e.target.textContent = "✨ تم"; 
+                    e.target.style.backgroundColor = "#10b981"; 
+                }
+            }
+        });
+    });
+}
+
+tabSabah.addEventListener('click', () => { 
+    tabSabah.classList.add('active'); 
+    tabMasaa.classList.remove('active'); 
+    currentActiveType = 'sabah';
+    showAllAdhkar = false;
+    renderAdhkar(sabahAdhkar, 'sabah'); 
+});
+
+tabMasaa.addEventListener('click', () => { 
+    tabMasaa.classList.add('active'); 
+    tabSabah.classList.remove('active'); 
+    currentActiveType = 'masaa';
+    showAllAdhkar = false;
+    renderAdhkar(masaaAdhkar, 'masaa'); 
+});
+
+toggleAdhkarBtn.addEventListener('click', () => {
+    showAllAdhkar = !showAllAdhkar;
+    const currentList = currentActiveType === 'sabah' ? sabahAdhkar : masaaAdhkar;
+    renderAdhkar(currentList, currentActiveType);
+});
+
+renderAdhkar(sabahAdhkar, 'sabah');
+
+const showToast = (text, isError = false) => {
+    const toast = document.getElementById('toast-notification');
+    toast.textContent = text;
+    toast.style.background = isError ? "#ef4444" : "#10b981";
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
+};
+
+document.getElementById('send-whatsapp-btn').addEventListener('click', () => {
+    const name = document.getElementById('sender-name').value.trim();
+    const type = document.getElementById('msg-type').value;
+    const msg = document.getElementById('sender-msg').value.trim();
+
+    if (!msg) {
+        showToast("الرجاء كتابة محتوى الرسالة أولاً قبل الإرسال! ⚠️", true);
+        document.getElementById('sender-msg').focus();
+        return;
+    }
+
+    const textEncoded = encodeURIComponent(`📌 نوع: ${type}\n👤 الاسم: ${name || "زائر للموقع"}\n💬:\n${msg}`);
+    window.open(`https://wa.me/201099779504?text=${textEncoded}`, '_blank');
+});
+
+function updateShareWhatsAppLink() {
+    const shareText = encodeURIComponent(`تفضل بزيارة موقع حصن المسلم الرائع للمطور زياد محمد 🌙✨\n${window.location.href}`);
+    document.getElementById('share-whatsapp-link').href = `https://wa.me/?text=${shareText}`;
+}
+
+document.getElementById('share-site-btn').addEventListener('click', () => {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+        showToast("تم نسخ رابط الموقع للحافظة بنجاح! 📋", false);
+    }).catch(() => {
+        prompt("انسخ الرابط يدوياً:", window.location.href);
+    });
+});
+</script>
+</body>
+</html>
