@@ -49,7 +49,6 @@
             position: relative;
         }
         
-        /* تأثير الضوء الخلفي الخفيف (Glow Effects) */
         body::before {
             content: '';
             position: absolute;
@@ -120,7 +119,6 @@
             background: rgba(255, 255, 255, 0.35);
         }
 
-        /* شريط العد التنازلي للصلاة القادمة */
         .next-prayer-banner {
             background: var(--card-bg);
             border: 1px solid rgba(212, 175, 55, 0.3);
@@ -303,13 +301,24 @@
             box-shadow: 0 4px 12px rgba(11, 60, 41, 0.2);
         }
 
-        /* شريط إنجاز الأذكار (Progress Bar) */
+        /* شريط إنجاز الأذكار المطور والأنيق */
+        .progress-wrapper {
+            margin-bottom: 15px;
+            text-align: right;
+        }
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
         .progress-container {
             width: 100%;
-            background: rgba(0,0,0,0.06);
-            border-radius: 20px;
-            height: 10px;
-            margin-bottom: 15px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 12px;
+            height: 8px;
             overflow: hidden;
             border: 1px solid rgba(0,0,0,0.03);
         }
@@ -319,8 +328,8 @@
         .progress-bar {
             height: 100%;
             width: 0%;
-            background: linear-gradient(90deg, var(--primary-color), #10b981);
-            border-radius: 20px;
+            background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+            border-radius: 12px;
             transition: width 0.4s ease;
         }
 
@@ -453,7 +462,6 @@
 </header>
 
 <main class="container">
-    <!-- شريط العد التنازلي للصلاة القادمة -->
     <div class="next-prayer-banner" id="next-prayer-box">
         <i class="fa-solid fa-clock" style="color: var(--accent-color);"></i>
         <span id="next-prayer-text">جارٍ حساب موعد الصلاة القادمة...</span>
@@ -506,9 +514,14 @@
                 <button id="tab-masaa" class="tab-btn">أذكار المساء 🌙</button>
             </div>
             
-            <!-- شريط إنجاز الأذكار -->
-            <div class="progress-container">
-                <div id="adhkar-progress" class="progress-bar"></div>
+            <div class="progress-wrapper">
+                <div class="progress-label">
+                    <span>نسبة إنجاز الأذكار</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div id="adhkar-progress" class="progress-bar"></div>
+                </div>
             </div>
 
             <div id="adhkar-list-container" style="display: flex; flex-direction: column; gap: 10px; text-align: right; margin-top: 5px;"></div>
@@ -582,6 +595,50 @@ const quranVerses = [
     { text: "وَاصْبِرْ لِحُكْمِ رَبِّكَ فَإِنَّكَ بِأَعْيُنِنَا", ref: "[سورة الطور: 48]" },
     { text: "قُلْ لَنْ يُصِيبَنَا إِلَّا مَا كَتَبَ اللَّهُ لَنَا هُوَ مَوْلَانَا وَعَلَى اللَّهِ فَلْيَتَوَكَّلِ الْمُؤْمِنُونَ", ref: "[سورة التوبة: 51]" },
     { text: "وَاذْكُرْ رَبَّكَ كَثِيرًا وَسَبِّحْ بِالْعَشِيِّ وَالْإِبْكَارِ", ref: "[سورة آل عمران: 41]" }
+];
+
+// أذكار الصباح كاملة بدون اختصار
+const sabahAdhkar = [
+    { text: "أَصْبَحْنَا وَأَصْبَحَ المُلْكُ للهِ، وَالحَمْدُ للهِ، لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير. رَبِّ أسْأَلُكَ خَيْرَ ما في هذا اليَوْمِ وَخَيْرَ ما بَعْدَهُ، وَأَعُوذُ بِكَ من شَرِّ ما في هذا اليَوْمِ وَشَرِّ ما بَعْدَهُ، رَبِّ أَعُوذُ بِكَ مِنَ الكَسَلِ وَسُوءِ الكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ في النَّارِ وَعَذَابٍ في القَبْرِ.", count: 1, ref: "رواه مسلم" },
+    { text: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.", count: 1, ref: "رواه الترمذي" },
+    { text: "اللَّهُمَّ أَنْتَ رَبِّي لا إلهَ إلا أنتَ، خَلَقْتَني وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ من شَرِّ ما صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِر لي فإنه لا يَغْفِرُ الذُّنوبَ إلا أنتَ.", count: 1, ref: "رواه البخاري" },
+    { text: "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ انتَ اللهُ لا إلهَ إلا أنتَ وَحْدَكَ لا شريكَ لَكَ، وَأَنَّ مُحَمَّداً عَبْدُكَ وَرَسُولُكَ.", count: 4, ref: "رواه أبو داود" },
+    { text: "اللَّهُمَّ ما أَصْبَح بي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ، فَمِنْكَ وَحْدَكَ لا شريكَ لَكَ، فَلَكَ الحَمْدُ وَلَكَ الشُّكْرُ.", count: 1, ref: "رواه أبو داود" },
+    { text: "حَسْبِيَ اللَّهُ لا إلهَ إلا هو، عَلَيْهِ تَوَكَّلْتُ، وهو رَبُّ العَرْشِ العَظِيمِ.", count: 7, ref: "رواه أبو داود مرفوعاً" },
+    { text: "بِسْمِ اللهِ الذي لا يَضُرُّ مع اسمِهِ شَيْءٌ في الأرضِ ولا في السَّماءِ وهو السَّمِيعُ العَلِيمُ.", count: 3, ref: "رواه أبو داود والترمذي" },
+    { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ العَفْوَ وَالعَافِيَةَ في الدُّنْيَا وَالآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ العَفْوَ وَالعَافِيَةَ: في دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ استُرْ عَوْرَاتِي، وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ، وَمِنْ خَلْفِي، وَعَنْ يَمِينِي، وَعَنْ شِمَالِي، وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ من تَحْتِي.", count: 1, ref: "رواه أبو داود وابن ماجه" },
+    { text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلَامِ دِيناً، وَبُِمَحَمَّدٍ صلى الله عليه وسلم نَبِيّاً ورسولاً.", count: 3, ref: "رواه أبو داود والترمذي" },
+    { text: "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لي شَأْنِي كُلَّهُ، وَلا تَكِلْنِي إلى نَفْسِي طَرْفَةَ عَيْنٍ.", count: 3, ref: "رواه الحاكم وصححه الألباني" },
+    { text: "أَصْبَحْنَا عَلَى فِطْرَةِ الإِسْلَامِ، وَعَلَى كَلِمَةِ الإِخْلَاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صلى الله عليه وسلم، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ حَنِيفاً مُسْلِماً، وَمَا كَانَ مِنَ المُشْرِكِينَ.", count: 1, ref: "رواه أحمد" },
+    { text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ.", count: 100, ref: "رواه مسلم" },
+    { text: "لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير.", count: 10, ref: "رواه النسائي في الكبرى" },
+    { text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.", count: 3, ref: "رواه مسلم" },
+    { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ عِلْماً نَافِعاً، وَرِزْقاً طَيِّباً، وَعَمَلاً مُتَقَبَّلاً.", count: 1, ref: "رواه ابن ماجه" },
+    { text: "اسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ.", count: 100, ref: "رواه البخاري ومسلم" },
+    { text: "قراءة آية الكرسي (اللّهُ لاَ إِلََهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ...)", count: 1, ref: "سورة البقرة: 255" },
+    { text: "قراءة سورة الإخلاص، وفلق، والناس (ثلاث مرات لكل سورة)", count: 3, ref: "رواه أبو داود والترمذي" }
+];
+
+// أذكار المساء كاملة بدون اختصار
+const masaaAdhkar = [
+    { text: "أَمْسَيْنَا وَأَمْسَى المُلْكُ للهِ، وَالحَمْدُ للهِ، لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير. رَبِّ أسْأَلُكَ خَيْرَ ما في هذه اللَّيْلَةِ وَخَيْرَ ما بَعْدَها، وَأَعُوذُ بِكَ من شَرِّ ما في هذه اللَّيْلَةِ وَشَرِّ ما بَعْدَها، رَبِّ أَعُوذُ بِكَ مِنَ الكَسَلِ وَسُوءِ الكِبَرِ، رَبِّ أَعُوذُ بِكَ مِنْ عَذَابٍ في النَّارِ وَعَذَابٍ في القَبْرِ.", count: 1, ref: "رواه مسلم" },
+    { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ المَصِيرُ.", count: 1, ref: "رواه الترمذي" },
+    { text: "اللَّهُمَّ أَنْتَ رَبِّي لا إلهَ إلا أنتَ، خَلَقْتَني وَأَنَا عَبْدُكَ، وَأَنَا عَلَى عَهْدِكَ وَوَعْدِكَ مَا اسْتَطَعْتُ، أَعُوذُ بِكَ من شَرِّ ما صَنَعْتُ، أَبُوءُ لَكَ بِنِعْمَتِكَ عَلَيَّ، وَأَبُوءُ لَكَ بِذَنْبِي فَاغْفِر لي فإنه لا يَغْفِرُ الذُّنوبَ إلا أنتَ.", count: 1, ref: "رواه البخاري" },
+    { text: "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ، وَمَلَائِكَتَكَ، وَجَمِيعَ خَلْقِكَ، أَنَّكَ انتَ اللهُ لا إلهَ إلا أنتَ وَحْدَكَ لا شريكَ لَكَ، وَأَنَّ مُحَمَّداً عَبْدُكَ وَرَسُولُكَ.", count: 4, ref: "رواه أبو داود" },
+    { text: "اللَّهُمَّ ما أَمْسَى بي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ، فَمِنْكَ وَحْدَكَ لا شريكَ لَكَ، فَلَكَ الحَمْدُ وَلَكَ الشُّكْرُ.", count: 1, ref: "رواه أبو داود" },
+    { text: "حَسْبِيَ اللَّهُ لا إلهَ إلا هو، عَلَيْهِ تَوَكَّلْتُ، وهو رَبُّ العَرْشِ العَظِيمِ.", count: 7, ref: "رواه أبو داود مرفوعاً" },
+    { text: "بِسْمِ اللهِ الذي لا يَضُرُّ مع اسمِهِ شَيْءٌ في الأرضِ ولا في السَّماءِ وهو السَّمِيعُ العَلِيمُ.", count: 3, ref: "رواه أبو داود والترمذي" },
+    { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ العَفْوَ وَالعَافِيَةَ في الدُّنْيَا وَالآخِرَةِ، اللَّهُمَّ إِنِّي أَسْأَلُكَ العَفْوَ وَالعَافِيَةَ: في دِينِي وَدُنْيَايَ وَأَهْلِي وَمَالِي، اللَّهُمَّ استُرْ عَوْرَاتِي، وَآمِنْ رَوْعَاتِي، اللَّهُمَّ احْفَظْنِي مِنْ بَيْنِ يَدَيَّ، وَمِنْ خَلْفِي، وَعَنْ يَمِينِي، وَعَنْ شِمَالِي، وَمِنْ فَوْقِي، وَأَعُوذُ بِعَظَمَتِكَ أَنْ أُغْتَالَ من تَحْتِي.", count: 1, ref: "رواه أبو داود وابن ماجه" },
+    { text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلَامِ دِيناً، وَبُِمَحَمَّدٍ صلى الله عليه وسلم نَبِيّاً ورسولاً.", count: 3, ref: "رواه أبو داود والترمذي" },
+    { text: "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لي شَأْنِي كُلَّهُ، وَلا تَكِلْنِي إلى نَفْسِي طَرْفَةَ عَيْنٍ.", count: 3, ref: "رواه الحاكم وصححه الألباني" },
+    { text: "أَمْسَيْنَا عَلَى فِطْرَةِ الإِسْلَامِ، وَعَلَى كَلِمَةِ الإِخْلَاصِ، وَعَلَى دِينِ نَبِيِّنَا مُحَمَّدٍ صلى الله عليه وسلم، وَعَلَى مِلَّةِ أَبِينَا إِبْرَاهِيمَ حَنِيفاً مُسْلِماً، وَمَا كَانَ مِنَ المُشْرِكِينَ.", count: 1, ref: "رواه أحمد" },
+    { text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ ما خَلَقَ.", count: 3, ref: "رواه مسلم" },
+    { text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ.", count: 100, ref: "رواه مسلم" },
+    { text: "لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير.", count: 10, ref: "رواه النسائي في الكبرى" },
+    { text: "سُبْحَانَ اللهِ وَبِحَمْدِهِ: عَدَدَ خَلْقِهِ، وَرِضَا نَفْسِهِ، وَزِنَةَ عَرْشِهِ، وَمِدَادَ كَلِمَاتِهِ.", count: 3, ref: "رواه مسلم" },
+    { text: "اسْتَغْفِرُ اللهَ وَأَتُوبُ إِلَيْهِ.", count: 100, ref: "رواه البخاري ومسلم" },
+    { text: "قراءة آية الكرسي (اللّهُ لاَ إِلََهَ إِلاَّ هُوَ الْحَيُّ الْقَيُّومُ...)", count: 1, ref: "سورة البقرة: 255" },
+    { text: "قراءة سورة الإخلاص، وفلق، والناس (ثلاث مرات لكل سورة)", count: 3, ref: "رواه أبو داود والترمذي" }
 ];
 
 window.addEventListener('DOMContentLoaded', () => {
@@ -663,10 +720,9 @@ function formatTime(timeStr) {
     let h = parseInt(hours);
     let period = h >= 12 ? 'م' : 'ص';
     h = h % 12 || 12;
-    return `${h}:${minutes} ${period}`;
+    return `${h}:${minutes}${period}`;
 }
 
-// تشغيل العد التنازلي للصلاة القادمة
 function startPrayerCountdown() {
     if (!globalTimings) return;
     
@@ -698,7 +754,6 @@ function startPrayerCountdown() {
             }
         }
 
-        // لو كل صلوات اليوم انتهت، تبقى الصلاة القادمة هي فجر اليوم التالي
         if (!nextPrayer) {
             let [ph, pm] = prayers[0].time.split(':').map(Number);
             let prayerTotalSecs = ph * 3600 + pm * 60;
@@ -714,25 +769,28 @@ function startPrayerCountdown() {
         if (hoursLeft > 0) timeStr += `${hoursLeft} ساعة و `;
         timeStr += `${minsLeft} دقيقة و ${secsLeft} ثانية`;
 
-        document.getElementById('next-prayer-text').innerHTML = `متبقي على صلاة <span>${nextPrayer.name}</span>: ${timeStr}`;
+        document.getElementById('next-prayer-text').innerHTML = `متبقي على صلاة <span>${nextPrayer.name}</span>:${timeStr}`;
     }, 1000);
 }
 
-// صوت "تكة" تفاعلي للمسبحة باستخدام Web Audio API
+// إنشاء AudioContext خفيف وإغلاقه فوراً لمنع التعليق عند الضغط السريع
 function playClickSound() {
     try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtx) return;
+        const ctx = new AudioCtx();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(700, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.03);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+        osc.frequency.setValueAtTime(600, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(150, ctx.currentTime + 0.02);
+        gain.gain.setValueAtTime(0.05, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start();
-        osc.stop(ctx.currentTime + 0.03);
+        osc.stop(ctx.currentTime + 0.02);
+        osc.onended = () => ctx.close();
     } catch(e) {}
 }
 
@@ -756,12 +814,11 @@ counterBtn.addEventListener('click', () => {
     localStorage.setItem('sebha_count', count);
     localStorage.setItem('sebha_total_count', totalCount);
     
-    // تأثير حركي خفيفة للرقم واهتزاز وصوت
     counterValue.classList.add('clicked');
     setTimeout(() => counterValue.classList.remove('clicked'), 100);
     
     playClickSound();
-    if (navigator.vibrate) navigator.vibrate(25);
+    if (navigator.vibrate) navigator.vibrate(20);
 
     achievementMsg.textContent = (count > 0 && count % 33 === 0) ? "ما شاء الله! أتممت تسبيحة مباركة 🌟" : "";
 });
@@ -773,37 +830,12 @@ resetBtn.addEventListener('click', () => {
     achievementMsg.textContent = "";
 });
 
-const sabahAdhkar = [
-    { text: "أَصْبَحْنَا وَأَصْبَحَ المُلْكُ للهِ، وَالحَمْدُ للهِ، لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له، له المُلْكُ وله الحَمْدُ وهو على كل شيء قدير...", count: 1, ref: "رواه مسلم" },
-    { text: "اللَّهُمَّ بِكَ أَصْبَحْنَا، وَبِكَ أَمْسَيْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ النُّشُورُ.", count: 1, ref: "رواه الترمذي" },
-    { text: "اللَّهُمَّ أَنْتَ رَبِّي لا إلهَ إلا أنتَ، خَلَقْتَني وَأَنَا عَبْدُكَ...", count: 1, ref: "رواه البخاري" },
-    { text: "اللَّهُمَّ إِنِّي أَصْبَحْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ...", count: 4, ref: "رواه أبو داود" },
-    { text: "اللَّهُمَّ ما أَصْبَح بي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ...", count: 1, ref: "رواه أبو داود" },
-    { text: "حَسْبِيَ اللَّهُ لا إلهَ إلا هو، عَلَيْهِ تَوَكَّلْتُ، وهو رَبُّ العَرْشِ العَظِيمِ.", count: 7, ref: "رواه أبو داود" },
-    { text: "بِسْمِ اللهِ الذي لا يَضُرُّ مع اسمِهِ شَيْءٌ في الأرضِ ولا في السَّماءِ...", count: 3, ref: "رواه أبو داود والترمذي" },
-    { text: "اللَّهُمَّ إِنِّي أَسْأَلُكَ العَفْوَ وَالعَافِيَةَ في الدُّنْيَا وَالآخِرَةِ...", count: 1, ref: "رواه أبو داود وابن ماجه" },
-    { text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلَامِ دِيناً، وَبِمَحَمَّدٍ نَبِيّاً ورسولاً.", count: 3, ref: "رواه أبو داود والترمذي" },
-    { text: "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ، أَصْلِحْ لي شَأْنِي كُلَّهُ...", count: 3, ref: "رواه الحاكم" }
-];
-
-const masaaAdhkar = [
-    { text: "أَمْسَيْنَا وَأَمْسَى المُلْكُ للهِ، وَالحَمْدُ للهِ، لا إلهَ إلا اللهُ وَحْدَهُ لا شريكَ له...", count: 1, ref: "رواه مسلم" },
-    { text: "اللَّهُمَّ بِكَ أَمْسَيْنَا، وَبِكَ أَصْبَحْنَا، وَبِكَ نَحْيَا، وَبِكَ نَمُوتُ وَإِلَيْكَ المَصِيرُ.", count: 1, ref: "رواه الترمذي" },
-    { text: "اللَّهُمَّ أَنْتَ رَبِّي لا إلهَ إلا أنتَ، خَلَقْتَني وَأَنَا عَبْدُكَ...", count: 1, ref: "رواه البخاري" },
-    { text: "اللَّهُمَّ إِنِّي أَمْسَيْتُ أُشْهِدُكَ، وَأُشْهِدُ حَمَلَةَ عَرْشِكَ...", count: 4, ref: "رواه أبو داود" },
-    { text: "اللَّهُمَّ ما أَمْسَى بي مِنْ نِعْمَةٍ أَوْ بِأَحَدٍ مِنْ خَلْقِكَ...", count: 1, ref: "رواه أبو داود" },
-    { text: "حَسْبِيَ اللَّهُ لا إلهَ إلا هو، عَلَيْهِ تَوَكَّلْتُ...", count: 7, ref: "رواه أبو داود" },
-    { text: "بِسْمِ اللهِ الذي لا يَضُرُّ مع اسمِهِ شَيْءٌ في الأرضِ ولا في السَّماءِ...", count: 3, ref: "رواه أبو داود والترمذي" },
-    { text: "أَعُوذُ بِكَلِمَاتِ اللهِ التَّامَّاتِ مِنْ شَرِّ ما خَلَقَ.", count: 3, ref: "رواه مسلم" },
-    { text: "رَضِيتُ بِاللهِ رَبَّاً، وَبِالإِسْلَامِ دِيناً...", count: 3, ref: "رواه أبو داود والترمذي" },
-    { text: "يَا حَيُّ يَا قَيُّومُ، بِرَحْمَتِكَ أَسْتَغِيثُ...", count: 3, ref: "رواه الحاكم" }
-];
-
 const adhkarContainer = document.getElementById('adhkar-list-container');
 const tabSabah = document.getElementById('tab-sabah');
 const tabMasaa = document.getElementById('tab-masaa');
 const toggleAdhkarBtn = document.getElementById('toggle-adhkar-btn');
 const adhkarProgressBar = document.getElementById('adhkar-progress');
+const progressPercent = document.getElementById('progress-percent');
 
 let showAllAdhkar = false;
 let currentActiveType = 'sabah';
@@ -815,118 +847,20 @@ function updateAdhkarProgress(list, type) {
         let val = localStorage.getItem(key) !== null ? parseInt(localStorage.getItem(key)) : item.count;
         if (val === 0) completed++;
     });
-    let percentage = (completed / list.length) * 100;
+    let percentage = Math.round((completed / list.length) * 100);
     adhkarProgressBar.style.width = `${percentage}%`;
+    progressPercent.textContent = `${percentage}%`;
 }
 
 function renderAdhkar(list, type) {
     adhkarContainer.innerHTML = '';
-    const itemsToDisplay = showAllAdhkar ? list : list.slice(0, 4);
+    const itemsToDisplay = showAllAdhkar ? list : list.slice(0, 5);
 
     itemsToDisplay.forEach((dhkar, index) => {
         let key = `${type}_dhkar_${index}`;
         let savedCount = localStorage.getItem(key) !== null ? parseInt(localStorage.getItem(key)) : dhkar.count;
 
         const div = document.createElement('div');
-        div.style.cssText = "background: rgba(0, 0, 0, 0.02); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.05);";
+        div.style.cssText = "background: rgba(0, 0, 0, 0.02); padding: 12px; border-radius: 10px; border: 1.5px solid rgba(0,0,0,0.05);";
         div.innerHTML = `
-            <p style="font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">${dhkar.text}</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
-                <small style="color: var(--text-light); font-size: 0.75rem;">${dhkar.ref}</small>
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <span id="c-${type}-${index}" style="font-weight: bold; color: var(--primary-color); font-size: 1rem;">${savedCount}</span>
-                    <button class="btn-primary dhkar-btn" data-type="${type}" data-index="${index}" style="padding: 5px 12px; width: auto; font-size: 0.8rem; background-color: ${savedCount === 0 ? '#10b981' : 'var(--primary-color)'};">${savedCount > 0 ? 'قرأت الذكر 👆' : '✨ تم'}</button>
-                </div>
-            </div>`;
-        adhkarContainer.appendChild(div);
-    });
-
-    updateAdhkarProgress(list, type);
-
-    if (showAllAdhkar) {
-        toggleAdhkarBtn.innerHTML = '⬆️ إخفاء وطي القائمة';
-    } else {
-        toggleAdhkarBtn.innerHTML = `⬇️ عرض المزيد من الأذكار (${list.length - 4} أذكار أخرى)`;
-    }
-
-    document.querySelectorAll('.dhkar-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            let t = e.target.dataset.type, i = e.target.dataset.index, k = `${t}_dhkar_${i}`;
-            let arr = t === 'sabah' ? sabahAdhkar : masaaAdhkar;
-            let val = localStorage.getItem(k) !== null ? parseInt(localStorage.getItem(k)) : arr[i].count;
-            if (val > 0) {
-                val--;
-                localStorage.setItem(k, val);
-                document.getElementById(`c-${t}-${i}`).textContent = val;
-                updateAdhkarProgress(arr, t);
-                if (val === 0) { 
-                    e.target.textContent = "✨ تم"; 
-                    e.target.style.backgroundColor = "#10b981"; 
-                }
-            }
-        });
-    });
-}
-
-tabSabah.addEventListener('click', () => { 
-    tabSabah.classList.add('active'); 
-    tabMasaa.classList.remove('active'); 
-    currentActiveType = 'sabah';
-    showAllAdhkar = false;
-    renderAdhkar(sabahAdhkar, 'sabah'); 
-});
-
-tabMasaa.addEventListener('click', () => { 
-    tabMasaa.classList.add('active'); 
-    tabSabah.classList.remove('active'); 
-    currentActiveType = 'masaa';
-    showAllAdhkar = false;
-    renderAdhkar(masaaAdhkar, 'masaa'); 
-});
-
-toggleAdhkarBtn.addEventListener('click', () => {
-    showAllAdhkar = !showAllAdhkar;
-    const currentList = currentActiveType === 'sabah' ? sabahAdhkar : masaaAdhkar;
-    renderAdhkar(currentList, currentActiveType);
-});
-
-renderAdhkar(sabahAdhkar, 'sabah');
-
-const showToast = (text, isError = false) => {
-    const toast = document.getElementById('toast-notification');
-    toast.textContent = text;
-    toast.style.background = isError ? "#ef4444" : "#10b981";
-    toast.classList.add('show');
-    setTimeout(() => toast.classList.remove('show'), 3000);
-};
-
-document.getElementById('send-whatsapp-btn').addEventListener('click', () => {
-    const name = document.getElementById('sender-name').value.trim();
-    const type = document.getElementById('msg-type').value;
-    const msg = document.getElementById('sender-msg').value.trim();
-
-    if (!msg) {
-        showToast("الرجاء كتابة محتوى الرسالة أولاً قبل الإرسال! ⚠️", true);
-        document.getElementById('sender-msg').focus();
-        return;
-    }
-
-    const textEncoded = encodeURIComponent(`📌 نوع: ${type}\n👤 الاسم: ${name || "زائر للموقع"}\n💬:\n${msg}`);
-    window.open(`https://wa.me/201099779504?text=${textEncoded}`, '_blank');
-});
-
-function updateShareWhatsAppLink() {
-    const shareText = encodeURIComponent(`تفضل بزيارة موقع حصن المسلم الرائع للمطور زياد محمد 🌙✨\n${window.location.href}`);
-    document.getElementById('share-whatsapp-link').href = `https://wa.me/?text=${shareText}`;
-}
-
-document.getElementById('share-site-btn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
-        showToast("تم نسخ رابط الموقع للحافظة بنجاح! 📋", false);
-    }).catch(() => {
-        prompt("انسخ الرابط يدوياً:", window.location.href);
-    });
-});
-</script>
-</body>
-</html>
+            <p style="font-weight: 600; margin-bottom: 8
