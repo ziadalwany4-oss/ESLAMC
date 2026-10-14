@@ -19,18 +19,19 @@
         :root {
             --primary-color: #0b3c29;
             --accent-color: #d4af37;
-            --bg-color: #f4f7f6;
+            --bg-color: #f8fafc;
             --card-bg: #ffffff;
-            --text-main: #333333;
-            --text-light: #777777;
-            --radius: 14px;
+            --text-main: #2d3748;
+            --text-light: #718096;
+            --radius: 16px;
+            --transition: all 0.3s ease;
         }
         [data-theme="dark"] {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-main: #e0e0e0;
-            --text-light: #aaaaaa;
-            --primary-color: #1abc9c;
+            --bg-color: #0b1329;
+            --card-bg: #131b2e;
+            --text-main: #f1f5f9;
+            --text-light: #94a3b8;
+            --primary-color: #10b981;
         }
         * {
             box-sizing: border-box;
@@ -44,139 +45,195 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
+            transition: var(--transition);
+            position: relative;
         }
+        
+        /* تأثير الضوء الخلفي الخفيف (Glow Effects) */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 800px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, rgba(212, 175, 55, 0.03) 50%, transparent 70%);
+            z-index: -1;
+            pointer-events: none;
+        }
+
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 15px;
+            padding: 0 16px;
         }
         .header {
-            background: linear-gradient(135deg, var(--primary-color), #145a32);
+            background: linear-gradient(135deg, var(--primary-color), #065f46);
             color: white;
-            padding: 25px 15px;
+            padding: 28px 15px;
             text-align: center;
             border-bottom: 4px solid var(--accent-color);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }       
         .header h1 {
-            font-size: clamp(1.8rem, 4vw, 2.5rem);
-            margin-bottom: 5px;
+            font-size: clamp(1.8rem, 4vw, 2.4rem);
+            margin-bottom: 4px;
+            font-weight: 700;
         }
         #dynamic-greeting {
-            font-size: clamp(0.95rem, 2vw, 1.15rem);
+            font-size: clamp(0.9rem, 2vw, 1.05rem);
             color: var(--accent-color);
-            margin-top: 5px;
+            margin-top: 4px;
             font-weight: 600;
         }
         .developer-badge {
             display: inline-block;
-            background: rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.15);
             color: #fff;
-            padding: 6px 14px;
+            padding: 5px 14px;
             border-radius: 20px;
-            font-size: clamp(0.75rem, 2vw, 0.9rem);
-            margin-top: 8px;
+            font-size: clamp(0.75rem, 2vw, 0.85rem);
+            margin-top: 6px;
             border: 1px solid var(--accent-color);
-            max-width: 90%;
-            word-break: break-word;
+            backdrop-filter: blur(5px);
         }
         #sleep {
             position: absolute;
             top: 15px;
             left: 15px;
             background: rgba(255, 255, 255, 0.2);
-            border: 1px solid white;
+            border: 1px solid rgba(255,255,255,0.4);
             color: white;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 6px 14px;
+            border-radius: 10px;
             cursor: pointer;
             font-size: 0.85rem;
-            transition: background 0.3s;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
         }
         #sleep:hover {
             background: rgba(255, 255, 255, 0.35);
         }
+
+        /* شريط العد التنازلي للصلاة القادمة */
+        .next-prayer-banner {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 10px 20px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+        .next-prayer-banner span {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
         .main-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
         }
         .card {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 18px 20px;
             border-radius: var(--radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.04);
             border-top: 4px solid var(--primary-color);
             text-align: center;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            transition: var(--transition);
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
         .card h2 {
             color: var(--primary-color);
-            font-size: 1.25rem;
-            margin-bottom: 12px;
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
         #quran-verse {
-            font-size: 1.1rem;
+            font-size: 0.98rem;
             font-weight: 600;
             color: var(--text-main);
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            line-height: 1.7;
         }
         .ayw {
             color: var(--text-light);
-            font-size: 0.85rem;
+            font-size: 0.8rem;
         }
         .prayer-list p {
-            background: rgba(0, 0, 0, 0.03);
-            padding: 10px;
-            margin: 6px 0;
+            background: rgba(0, 0, 0, 0.02);
+            padding: 8px 12px;
+            margin: 5px 0;
             border-radius: 8px;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            border: 1px solid rgba(0,0,0,0.03);
         }
         [data-theme="dark"] .prayer-list p {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: rgba(255,255,255,0.05);
         }
         .counter-box {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             width: 100%;
         }
         #counter-value {
-            font-size: 3rem;
+            font-size: 2.8rem;
             font-weight: bold;
             color: var(--primary-color);
+            line-height: 1;
+            transition: transform 0.1s ease;
+        }
+        #counter-value.clicked {
+            transform: scale(1.1);
         }
         .total-counter-display {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-light);
-            background: rgba(0,0,0,0.04);
-            padding: 5px 12px;
+            background: rgba(0,0,0,0.03);
+            padding: 4px 10px;
             border-radius: 20px;
         }
         [data-theme="dark"] .total-counter-display {
             background: rgba(255,255,255,0.05);
         }
         #achievement-msg {
-            font-size: 0.9rem;
-            color: #27ae60;
+            font-size: 0.85rem;
+            color: #10b981;
             font-weight: bold;
-            min-height: 20px;
+            min-height: 18px;
         }
         .btn-primary {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 20px;
-            font-size: 1rem;
+            padding: 10px 20px;
+            font-size: 0.95rem;
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
@@ -185,123 +242,170 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            transition: opacity 0.2s;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(11, 60, 41, 0.2);
         }
         .btn-primary:active {
-            opacity: 0.85;
+            transform: scale(0.98);
         }
         .btn-secondary {
             background-color: transparent;
             color: var(--text-light);
             border: 1px solid var(--text-light);
-            padding: 8px 15px;
+            padding: 7px 14px;
             border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             width: 100%;
+            transition: var(--transition);
+        }
+        .btn-secondary:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
         }
         .radio {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 8px;
+        }
+        .radio p {
+            font-size: 0.85rem;
+            color: var(--text-light);
         }
         audio {
             width: 100%;
-            margin-top: 5px;
+            height: 36px;
+            margin-top: 2px;
             border-radius: 8px;
         }
         .tabs {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             flex-wrap: wrap;
         }
         .tab-btn {
-            padding: 8px 18px;
-            border: 1px solid var(--primary-color);
+            padding: 7px 16px;
+            border: 1.5px solid var(--primary-color);
             background: transparent;
             color: var(--primary-color);
             border-radius: 8px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            transition: var(--transition);
         }
         .tab-btn.active {
             background: var(--primary-color);
             color: white;
+            box-shadow: 0 4px 12px rgba(11, 60, 41, 0.2);
         }
+
+        /* شريط إنجاز الأذكار (Progress Bar) */
+        .progress-container {
+            width: 100%;
+            background: rgba(0,0,0,0.06);
+            border-radius: 20px;
+            height: 10px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.03);
+        }
+        [data-theme="dark"] .progress-container {
+            background: rgba(255,255,255,0.08);
+        }
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--primary-color), #10b981);
+            border-radius: 20px;
+            transition: width 0.4s ease;
+        }
+
         .support-form {
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             text-align: right;
         }
         .support-form input, .support-form select, .support-form textarea {
             width: 100%;
-            padding: 12px;
+            padding: 10px 14px;
             border: 1px solid rgba(0,0,0,0.1);
             border-radius: 10px;
             background: var(--bg-color);
             color: var(--text-main);
             font-family: 'Cairo', sans-serif;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .support-form input:focus, .support-form select:focus, .support-form textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
         }
         [data-theme="dark"] .support-form input, [data-theme="dark"] .support-form select, [data-theme="dark"] .support-form textarea {
             border-color: rgba(255,255,255,0.1);
         }
         .support-form textarea {
             resize: vertical;
-            min-height: 100px;
+            min-height: 85px;
         }
         .whatsapp-btn {
             background-color: #25d366;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
             color: white;
             gap: 8px;
         }
         .share-container {
             text-align: center;
-            margin: 20px 0 40px 0;
+            margin: 15px 0 30px 0;
             display: flex;
             justify-content: center;
             gap: 12px;
             flex-wrap: wrap;
-            padding: 0 15px;
+            padding: 0 16px;
         }
         .share-btn {
             background: linear-gradient(135deg, var(--accent-color), #b89728);
             color: #fff;
             border: none;
-            padding: 10px 20px;
+            padding: 9px 18px;
             border-radius: 25px;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.2);
             display: inline-flex;
             align-items: center;
             gap: 8px;
             text-decoration: none;
             flex: 1;
-            min-width: 160px;
+            min-width: 150px;
             justify-content: center;
+            transition: var(--transition);
+        }
+        .share-btn:hover {
+            transform: translateY(-2px);
         }
         .share-whatsapp {
             background: #25d366;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
         }
         #toast-notification {
             position: fixed;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(100px);
-            background: #e74c3c;
+            background: #ef4444;
             color: white;
             padding: 10px 20px;
             border-radius: 30px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             z-index: 1000;
             opacity: 0;
             transition: transform 0.4s ease, opacity 0.4s ease;
@@ -321,16 +425,9 @@
             border-top: 1px solid rgba(0,0,0,0.05);
         }
 
-        /* تحسينات إضافية للأجهزة اللوحية والكمبيوتر */
         @media (min-width: 768px) {
-            .container {
-                padding: 0 25px;
-            }
             .main-grid {
                 grid-template-columns: repeat(2, 1fr);
-            }
-            .card.full-width {
-                grid-column: 1 / -1;
             }
         }
         @media (min-width: 1024px) {
@@ -350,80 +447,94 @@
     <div class="container">
         <h1>🌙 حصن المسلم</h1>
         <div class="developer-badge">✨ تم تطويره وبرمجته بكل حب بواسطة: زياد محمد سامى خليل ✨</div>
-        <p id="date-display" style="margin-top: 8px; font-size: 0.95rem;">جارٍ تحميل التاريخ...</p>
+        <p id="date-display" style="margin-top: 8px; font-size: 0.9rem;">جارٍ تحميل التاريخ...</p>
         <p id="dynamic-greeting"></p>
     </div>
 </header>
 
-<main class="container main-grid">
-    <section class="card">
-        <h2>📖 آية اليوم</h2>
-        <blockquote id="quran-verse">"وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لا يَحْتَسِبْ"</blockquote>
-        <p class="ayw">[سورة الطلاق: 2-3]</p>
-    </section>
+<main class="container">
+    <!-- شريط العد التنازلي للصلاة القادمة -->
+    <div class="next-prayer-banner" id="next-prayer-box">
+        <i class="fa-solid fa-clock" style="color: var(--accent-color);"></i>
+        <span id="next-prayer-text">جارٍ حساب موعد الصلاة القادمة...</span>
+    </div>
 
-    <section class="card">
-        <h2>⏰ مواقيت الصلاة</h2>
-        <div id="prayer-times" class="prayer-list">
-            <p><span>الفجر:</span> <span>--:--</span></p>
-            <p><span>الظهر:</span> <span>--:--</span></p>
-            <p><span>العصر:</span> <span>--:--</span></p>
-            <p><span>المغرب:</span> <span>--:--</span></p>
-            <p><span>العشاء:</span> <span>--:--</span></p>
-        </div>
-        <small style="color: var(--text-light); margin-top: 8px;">* الأوقات تعتمد على موقعك الحالي</small>
-    </section>
+    <div class="main-grid">
+        <section class="card">
+            <h2>📖 آية اليوم</h2>
+            <blockquote id="quran-verse">"وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لا يَحْتَسِبْ"</blockquote>
+            <p class="ayw">[سورة الطلاق: 2-3]</p>
+        </section>
 
-    <section class="card">
-        <h2>📻 إذاعة القرآن الكريم</h2>
-        <div class="radio">
-            <p style="font-size: 0.9rem;">استمع بث مباشر لإذاعة القرآن الكريم من القاهرة</p>
-            <audio controls>
-                <source src="https://stream.radiojar.com/8s5u5tpdtwzuv" type="audio/mp3">
-            </audio>
-        </div>
-    </section>
+        <section class="card">
+            <h2>⏰ مواقيت الصلاة</h2>
+            <div id="prayer-times" class="prayer-list">
+                <p><span>الفجر:</span> <span>--:--</span></p>
+                <p><span>الظهر:</span> <span>--:--</span></p>
+                <p><span>العصر:</span> <span>--:--</span></p>
+                <p><span>المغرب:</span> <span>--:--</span></p>
+                <p><span>العشاء:</span> <span>--:--</span></p>
+            </div>
+            <small style="color: var(--text-light); margin-top: 6px; font-size: 0.75rem;">* الأوقات تعتمد على موقعك الحالي</small>
+        </section>
 
-    <section class="card">
-        <h2>📿 المسبحة الإلكترونية</h2>
-        <div class="counter-box">
-            <span id="counter-value">0</span>
-            <span class="total-counter-display">الإجمالي التراكمي: <strong id="total-counter-val">0</strong></span>
-            <div id="achievement-msg"></div>
-            <button id="counter-btn" class="btn-primary">سبحان الله</button>
-            <button id="reset-btn" class="btn-secondary">إعادة ضبط</button>
-        </div>
-    </section>
+        <section class="card">
+            <h2>📻 إذاعة القرآن الكريم</h2>
+            <div class="radio">
+                <p>استمع بث مباشر لإذاعة القرآن الكريم من القاهرة</p>
+                <audio controls>
+                    <source src="https://stream.radiojar.com/8s5u5tpdtwzuv" type="audio/mp3">
+                </audio>
+            </div>
+        </section>
 
-    <section class="card wide-card" style="grid-column: 1 / -1;">
-        <h2>📿 الأذكار اليومية</h2>
-        <div class="tabs">
-            <button id="tab-sabah" class="tab-btn active">أذكار الصباح ☀️</button>
-            <button id="tab-masaa" class="tab-btn">أذكار المساء 🌙</button>
-        </div>
-        <div id="adhkar-list-container" style="display: flex; flex-direction: column; gap: 12px; text-align: right; margin-top: 15px;"></div>
-        
-        <button id="toggle-adhkar-btn" class="btn-secondary" style="margin-top: 20px; font-weight: bold; border-color: var(--primary-color); color: var(--primary-color);">
-            ⬇️ عرض المزيد من الأذكار (الكل)
-        </button>
-    </section>
+        <section class="card">
+            <h2>📿 المسبحة الإلكترونية</h2>
+            <div class="counter-box">
+                <span id="counter-value">0</span>
+                <span class="total-counter-display">الإجمالي التراكمي: <strong id="total-counter-val">0</strong></span>
+                <div id="achievement-msg"></div>
+                <button id="counter-btn" class="btn-primary">سبحان الله</button>
+                <button id="reset-btn" class="btn-secondary">إعادة ضبط</button>
+            </div>
+        </section>
 
-    <section class="card wide-card" style="grid-column: 1 / -1;">
-        <h2>💬 صندوق الدعم والشكاوى والاقتراحات</h2>
-        <p style="color: var(--text-light); font-size: 0.9rem; margin-bottom: 15px;">لديك اقتراح لتطوير الموقع، مشكلة تقنية، أو تريد إرسال رأيك للمطور؟ اختر التصنيف واكتب رسالتك لتصل مباشرة عبر واتساب لزياد.</p>
-        <div class="support-form">
-            <input type="text" id="sender-name" placeholder="اسمك الكريم...">
-            <select id="msg-type">
-                <option value="اقتراح تطوير">💡 اقتراح لتطوير الموقع</option>
-                <option value="مشكلة تقنية">🛠️ الإبلاغ عن مشكلة أو خطأ</option>
-                <option value="رسالة شكر">🌹 كلمة شكر أو رأي</option>
-            </select>
-            <textarea id="sender-msg" placeholder="اكتب رسالتك بالتفصيل هنا..."></textarea>
-            <button type="button" id="send-whatsapp-btn" class="btn-primary whatsapp-btn">
-                <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> إرسال عبر واتساب للمطور
-            </option>
-        </div>
-    </section>
+        <section class="card wide-card" style="grid-column: 1 / -1;">
+            <h2>📿 الأذكار اليومية</h2>
+            <div class="tabs">
+                <button id="tab-sabah" class="tab-btn active">أذكار الصباح ☀️</button>
+                <button id="tab-masaa" class="tab-btn">أذكار المساء 🌙</button>
+            </div>
+            
+            <!-- شريط إنجاز الأذكار -->
+            <div class="progress-container">
+                <div id="adhkar-progress" class="progress-bar"></div>
+            </div>
+
+            <div id="adhkar-list-container" style="display: flex; flex-direction: column; gap: 10px; text-align: right; margin-top: 5px;"></div>
+            
+            <button id="toggle-adhkar-btn" class="btn-secondary" style="margin-top: 15px; font-weight: bold; border-color: var(--primary-color); color: var(--primary-color);">
+                ⬇️ عرض المزيد من الأذكار (الكل)
+            </button>
+        </section>
+
+        <section class="card wide-card" style="grid-column: 1 / -1;">
+            <h2>💬 صندوق الدعم والشكاوى والاقتراحات</h2>
+            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 12px;">لديك اقتراح لتطوير الموقع، مشكلة تقنية، أو تريد إرسال رأيك للمطور؟ اختر التصنيف واكتب رسالتك لتصل مباشرة عبر واتساب لزياد.</p>
+            <div class="support-form">
+                <input type="text" id="sender-name" placeholder="اسمك الكريم...">
+                <select id="msg-type">
+                    <option value="اقتراح تطوير">💡 اقتراح لتطوير الموقع</option>
+                    <option value="مشكلة تقنية">🛠️ الإبلاغ عن مشكلة أو خطأ</option>
+                    <option value="رسالة شكر">🌹 كلمة شكر أو رأي</option>
+                </select>
+                <textarea id="sender-msg" placeholder="اكتب رسالتك بالتفصيل هنا..."></textarea>
+                <button type="button" id="send-whatsapp-btn" class="btn-primary whatsapp-btn">
+                    <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> إرسال عبر واتساب للمطور
+                </button>
+            </div>
+        </section>
+    </div>
 </main>
 
 <div class="container share-container">
@@ -528,19 +639,22 @@ window.addEventListener('DOMContentLoaded', () => {
     updateShareWhatsAppLink();
 });
 
+let globalTimings = null;
+
 function fetchPrayerTimes(lat, lon) {
     const dateStr = Math.floor(Date.now() / 1000);
     fetch(`https://api.aladhan.com/v1/timings/${dateStr}?latitude=${lat}&longitude=${lon}&method=5`)
         .then(response => response.json())
         .then(data => {
-            const timings = data.data.timings;
+            globalTimings = data.data.timings;
             document.getElementById('prayer-times').innerHTML = `
-            <p><span>الفجر:</span> <span>${formatTime(timings.Fajr)}</span></p>
-            <p><span>الظهر:</span> <span>${formatTime(timings.Dhuhr)}</span></p>
-            <p><span>العصر:</span> <span>${formatTime(timings.Asr)}</span></p>
-            <p><span>المغرب:</span> <span>${formatTime(timings.Maghrib)}</span></p>
-            <p><span>العشاء:</span> <span>${formatTime(timings.Isha)}</span></p>
-            `;        
+            <p><span>الفجر:</span> <span>${formatTime(globalTimings.Fajr)}</span></p>
+            <p><span>الظهر:</span> <span>${formatTime(globalTimings.Dhuhr)}</span></p>
+            <p><span>العصر:</span> <span>${formatTime(globalTimings.Asr)}</span></p>
+            <p><span>المغرب:</span> <span>${formatTime(globalTimings.Maghrib)}</span></p>
+            <p><span>العشاء:</span> <span>${formatTime(globalTimings.Isha)}</span></p>
+            `;
+            startPrayerCountdown();
         }).catch(() => {});
 }
 
@@ -550,6 +664,76 @@ function formatTime(timeStr) {
     let period = h >= 12 ? 'م' : 'ص';
     h = h % 12 || 12;
     return `${h}:${minutes} ${period}`;
+}
+
+// تشغيل العد التنازلي للصلاة القادمة
+function startPrayerCountdown() {
+    if (!globalTimings) return;
+    
+    const prayers = [
+        { name: 'الفجر', time: globalTimings.Fajr },
+        { name: 'الظهر', time: globalTimings.Dhuhr },
+        { name: 'العصر', time: globalTimings.Asr },
+        { name: 'المغرب', time: globalTimings.Maghrib },
+        { name: 'العشاء', time: globalTimings.Isha }
+    ];
+
+    setInterval(() => {
+        const now = new Date();
+        let currentMinutes = now.getHours() * 60 + now.getMinutes();
+        let currentSeconds = now.getSeconds();
+        let totalCurrentSecs = currentMinutes * 60 + currentSeconds;
+
+        let nextPrayer = null;
+        let diffSecs = Infinity;
+
+        for (let p of prayers) {
+            let [ph, pm] = p.time.split(':').map(Number);
+            let prayerTotalSecs = ph * 3600 + pm * 60;
+            
+            if (prayerTotalSecs > totalCurrentSecs) {
+                nextPrayer = p;
+                diffSecs = prayerTotalSecs - totalCurrentSecs;
+                break;
+            }
+        }
+
+        // لو كل صلوات اليوم انتهت، تبقى الصلاة القادمة هي فجر اليوم التالي
+        if (!nextPrayer) {
+            let [ph, pm] = prayers[0].time.split(':').map(Number);
+            let prayerTotalSecs = ph * 3600 + pm * 60;
+            diffSecs = (24 * 3600 - totalCurrentSecs) + prayerTotalSecs;
+            nextPrayer = prayers[0];
+        }
+
+        let hoursLeft = Math.floor(diffSecs / 3600);
+        let minsLeft = Math.floor((diffSecs % 3600) / 60);
+        let secsLeft = diffSecs % 60;
+
+        let timeStr = "";
+        if (hoursLeft > 0) timeStr += `${hoursLeft} ساعة و `;
+        timeStr += `${minsLeft} دقيقة و ${secsLeft} ثانية`;
+
+        document.getElementById('next-prayer-text').innerHTML = `متبقي على صلاة <span>${nextPrayer.name}</span>: ${timeStr}`;
+    }, 1000);
+}
+
+// صوت "تكة" تفاعلي للمسبحة باستخدام Web Audio API
+function playClickSound() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(700, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.03);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.03);
+    } catch(e) {}
 }
 
 const counterBtn = document.getElementById('counter-btn');
@@ -571,6 +755,14 @@ counterBtn.addEventListener('click', () => {
     totalCounterVal.textContent = totalCount;
     localStorage.setItem('sebha_count', count);
     localStorage.setItem('sebha_total_count', totalCount);
+    
+    // تأثير حركي خفيفة للرقم واهتزاز وصوت
+    counterValue.classList.add('clicked');
+    setTimeout(() => counterValue.classList.remove('clicked'), 100);
+    
+    playClickSound();
+    if (navigator.vibrate) navigator.vibrate(25);
+
     achievementMsg.textContent = (count > 0 && count % 33 === 0) ? "ما شاء الله! أتممت تسبيحة مباركة 🌟" : "";
 });
 
@@ -611,9 +803,21 @@ const adhkarContainer = document.getElementById('adhkar-list-container');
 const tabSabah = document.getElementById('tab-sabah');
 const tabMasaa = document.getElementById('tab-masaa');
 const toggleAdhkarBtn = document.getElementById('toggle-adhkar-btn');
+const adhkarProgressBar = document.getElementById('adhkar-progress');
 
 let showAllAdhkar = false;
 let currentActiveType = 'sabah';
+
+function updateAdhkarProgress(list, type) {
+    let completed = 0;
+    list.forEach((item, index) => {
+        let key = `${type}_dhkar_${index}`;
+        let val = localStorage.getItem(key) !== null ? parseInt(localStorage.getItem(key)) : item.count;
+        if (val === 0) completed++;
+    });
+    let percentage = (completed / list.length) * 100;
+    adhkarProgressBar.style.width = `${percentage}%`;
+}
 
 function renderAdhkar(list, type) {
     adhkarContainer.innerHTML = '';
@@ -624,18 +828,20 @@ function renderAdhkar(list, type) {
         let savedCount = localStorage.getItem(key) !== null ? parseInt(localStorage.getItem(key)) : dhkar.count;
 
         const div = document.createElement('div');
-        div.style.cssText = "background: rgba(0, 0, 0, 0.02); padding: 12px; border-radius: 8px; border: 1.5px solid rgba(0,0,0,0.06);";
+        div.style.cssText = "background: rgba(0, 0, 0, 0.02); padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.05);";
         div.innerHTML = `
-            <p style="font-weight: 600; margin-bottom: 8px; font-size: 0.95rem;">${dhkar.text}</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <small style="color: var(--text-light);">${dhkar.ref}</small>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <span id="c-${type}-${index}" style="font-weight: bold; color: var(--primary-color); font-size: 1.1rem;">${savedCount}</span>
-                    <button class="btn-primary dhkar-btn" data-type="${type}" data-index="${index}" style="padding: 6px 14px; width: auto; font-size: 0.85rem; background-color: ${savedCount === 0 ? '#27ae60' : 'var(--primary-color)'};">${savedCount > 0 ? 'قرأت الذكر 👆' : '✨ تم'}</button>
+            <p style="font-weight: 600; margin-bottom: 6px; font-size: 0.9rem;">${dhkar.text}</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <small style="color: var(--text-light); font-size: 0.75rem;">${dhkar.ref}</small>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span id="c-${type}-${index}" style="font-weight: bold; color: var(--primary-color); font-size: 1rem;">${savedCount}</span>
+                    <button class="btn-primary dhkar-btn" data-type="${type}" data-index="${index}" style="padding: 5px 12px; width: auto; font-size: 0.8rem; background-color: ${savedCount === 0 ? '#10b981' : 'var(--primary-color)'};">${savedCount > 0 ? 'قرأت الذكر 👆' : '✨ تم'}</button>
                 </div>
             </div>`;
         adhkarContainer.appendChild(div);
     });
+
+    updateAdhkarProgress(list, type);
 
     if (showAllAdhkar) {
         toggleAdhkarBtn.innerHTML = '⬆️ إخفاء وطي القائمة';
@@ -652,9 +858,10 @@ function renderAdhkar(list, type) {
                 val--;
                 localStorage.setItem(k, val);
                 document.getElementById(`c-${t}-${i}`).textContent = val;
+                updateAdhkarProgress(arr, t);
                 if (val === 0) { 
                     e.target.textContent = "✨ تم"; 
-                    e.target.style.backgroundColor = "#27ae60"; 
+                    e.target.style.backgroundColor = "#10b981"; 
                 }
             }
         });
@@ -688,7 +895,7 @@ renderAdhkar(sabahAdhkar, 'sabah');
 const showToast = (text, isError = false) => {
     const toast = document.getElementById('toast-notification');
     toast.textContent = text;
-    toast.style.background = isError ? "#e74c3c" : "#27ae60";
+    toast.style.background = isError ? "#ef4444" : "#10b981";
     toast.classList.add('show');
     setTimeout(() => toast.classList.remove('show'), 3000);
 };
