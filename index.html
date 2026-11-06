@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>🌙 حصن المسلم</title>
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b3c29">
@@ -53,8 +53,10 @@
             overflow-x: hidden;
             transition: var(--transition);
             position: relative;
+            /* مساحة لشريط التنقل الثابت اللي تحت */
+            padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
         }
-        
+
         body::before {
             content: '';
             position: absolute;
@@ -71,20 +73,20 @@
 
         .container {
             width: 100%;
-            max-width: 1200px;
+            max-width: 720px;
             margin: 0 auto;
             padding: 0 16px;
         }
         .header {
             background: linear-gradient(135deg, var(--primary-color), #065f46);
             color: white;
-            padding: 28px 15px;
+            padding: 64px 15px 28px;
             text-align: center;
             border-bottom: 4px solid var(--accent-color);
             margin-bottom: 20px;
             position: relative;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-        }       
+        }
         .header h1 {
             font-size: clamp(1.8rem, 4vw, 2.4rem);
             margin-bottom: 4px;
@@ -107,22 +109,56 @@
             border: 1px solid var(--accent-color);
             backdrop-filter: blur(5px);
         }
+        /* زر الوضع الليلي: كبسولة مكتوب عليها الاسم، فوق على اليسار (بتتحرك مع الصفحة) */
         #sleep {
             position: absolute;
-            top: 15px;
-            left: 15px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255,255,255,0.4);
-            color: white;
-            padding: 6px 14px;
-            border-radius: 10px;
-            cursor: pointer;
+            top: calc(12px + env(safe-area-inset-top, 0px));
+            left: 12px;
+            z-index: 950;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 15px;
+            min-height: 38px;
+            white-space: nowrap;
+            border-radius: 999px;
+            border: 1.5px solid var(--accent-color);
+            background: var(--card-bg);
+            color: var(--text-main);
             font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.18);
             transition: var(--transition);
-            backdrop-filter: blur(5px);
         }
-        #sleep:hover {
-            background: rgba(255, 255, 255, 0.35);
+        #sleep:active {
+            transform: scale(0.95);
+        }
+
+        /* ===== الصفحات (الأقسام) ===== */
+        .view {
+            display: none;
+        }
+        .view.active {
+            display: block;
+            animation: viewIn 0.25s ease;
+        }
+        @keyframes viewIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: none; }
+        }
+        .view-title {
+            text-align: center;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            padding: 64px 0 14px;
+        }
+        .stack {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
         }
 
         .next-prayer-banner {
@@ -131,7 +167,7 @@
             border-radius: 12px;
             padding: 10px 20px;
             text-align: center;
-            margin-bottom: 25px;
+            margin-bottom: 16px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
             display: flex;
             justify-content: center;
@@ -140,17 +176,14 @@
             font-size: 0.95rem;
             font-weight: 600;
         }
+        .next-prayer-banner[data-go] {
+            cursor: pointer;
+        }
         .next-prayer-banner span {
             color: var(--primary-color);
             font-weight: bold;
         }
 
-        .main-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
         .card {
             background: var(--card-bg);
             padding: 18px 20px;
@@ -162,10 +195,6 @@
             flex-direction: column;
             justify-content: space-between;
             transition: var(--transition);
-        }
-        .card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
         }
         .card h2 {
             color: var(--primary-color);
@@ -424,12 +453,19 @@
             background: linear-gradient(135deg, var(--primary-color), #065f46);
             box-shadow: 0 4px 12px rgba(11, 60, 41, 0.25);
         }
+        /* زر التثبيت: بقى في أول الرئيسية بعرض كامل */
+        #install-btn {
+            width: 100%;
+            margin-bottom: 16px;
+            padding: 13px 18px;
+            font-size: 1rem;
+        }
         #install-btn[hidden] {
             display: none;
         }
         #update-banner {
             position: fixed;
-            bottom: 70px;
+            bottom: calc(86px + env(safe-area-inset-bottom, 0px));
             left: 50%;
             transform: translateX(-50%);
             background: var(--card-bg);
@@ -468,7 +504,7 @@
         }
         #toast-notification {
             position: fixed;
-            bottom: 20px;
+            bottom: calc(92px + env(safe-area-inset-bottom, 0px));
             left: 50%;
             transform: translateX(-50%) translateY(100px);
             background: #ef4444;
@@ -480,6 +516,7 @@
             font-size: 0.85rem;
             z-index: 1000;
             opacity: 0;
+            pointer-events: none;
             transition: transform 0.4s ease, opacity 0.4s ease;
             max-width: 90%;
             text-align: center;
@@ -496,6 +533,235 @@
             font-size: 0.85rem;
             border-top: 1px solid rgba(0,0,0,0.05);
             font-weight: bold;
+        }
+
+        /* ===== الرئيسية: اختصارات + كارت الأذكار + الدعم ===== */
+        .shortcuts {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .shortcut {
+            background: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.35);
+            border-radius: 14px;
+            padding: 12px 4px;
+            min-height: 78px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-weight: 700;
+            font-size: 0.78rem;
+            color: var(--text-main);
+            cursor: pointer;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.04);
+            transition: var(--transition);
+        }
+        .shortcut .ico {
+            font-size: 1.6rem;
+            line-height: 1;
+        }
+        .shortcut:active {
+            transform: scale(0.96);
+        }
+        .support-details {
+            display: block;
+        }
+        .support-details summary {
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 1.05rem;
+            color: var(--primary-color);
+            list-style: none;
+            text-align: center;
+            min-height: 28px;
+        }
+        .support-details summary::-webkit-details-marker {
+            display: none;
+        }
+        .support-details[open] summary {
+            margin-bottom: 10px;
+        }
+
+        /* ===== شريط التنقل اللي تحت ===== */
+        .tabbar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 900;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: var(--card-bg);
+            border-top: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            padding-bottom: env(safe-area-inset-bottom, 0px);
+        }
+        [data-theme="dark"] .tabbar {
+            border-top-color: rgba(255,255,255,0.08);
+        }
+        .tab-item {
+            position: relative;
+            background: none;
+            border: none;
+            min-height: 60px;
+            padding: 8px 2px 7px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            color: var(--text-light);
+            font-size: 0.72rem;
+            font-weight: 700;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        .tab-item .ico {
+            font-size: 1.4rem;
+            line-height: 1;
+            opacity: 0.75;
+            filter: grayscale(0.5);
+            transition: var(--transition);
+        }
+        .tab-item.active {
+            color: var(--primary-color);
+        }
+        .tab-item.active .ico {
+            opacity: 1;
+            filter: none;
+            transform: translateY(-1px) scale(1.1);
+        }
+        .tab-item.active::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 34px;
+            height: 3px;
+            border-radius: 0 0 4px 4px;
+            background: var(--accent-color);
+        }
+
+        /* ===== القبلة ===== */
+        /* الإطار بيقص أركان القرص وهو بيلف، عشان ما يظهرش سكرول جانبي في الصفحة */
+        .qibla-stage {
+            width: min(340px, 100%);
+            margin: 6px auto 8px;
+            padding: 30px 24px 22px;
+            overflow: hidden;
+        }
+        .qibla-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 1;
+        }
+        .qibla-dial {
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            border: 6px solid var(--primary-color);
+            background: radial-gradient(circle, var(--card-bg) 58%, rgba(16, 185, 129, 0.12));
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12), inset 0 0 20px rgba(0,0,0,0.05);
+            transition: transform 0.12s linear, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .qibla-wrap.aligned .qibla-dial {
+            border-color: #10b981;
+            box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.28), 0 0 16px rgba(16, 185, 129, 0.45);
+        }
+        .q-dir {
+            position: absolute;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+        .q-n { top: 8px; left: 50%; transform: translateX(-50%); color: #ef4444; }
+        .q-s { bottom: 8px; left: 50%; transform: translateX(-50%); }
+        .q-e { right: 12px; top: 50%; transform: translateY(-50%); }
+        .q-w { left: 12px; top: 50%; transform: translateY(-50%); }
+        .q-kaaba {
+            position: absolute;
+            inset: 0;
+        }
+        .q-kaaba::after {
+            content: '';
+            position: absolute;
+            top: 64px;
+            bottom: 50%;
+            left: 50%;
+            width: 2px;
+            margin-left: -1px;
+            background: linear-gradient(var(--accent-color), transparent);
+        }
+        .q-kaaba span {
+            position: absolute;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .q-pointer {
+            position: absolute;
+            top: -16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 11px solid transparent;
+            border-right: 11px solid transparent;
+            border-top: 20px solid var(--accent-color);
+            z-index: 3;
+            filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3));
+        }
+        .q-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 14px;
+            height: 14px;
+            margin: -7px 0 0 -7px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            z-index: 3;
+        }
+        .q-readouts {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .q-box {
+            background: rgba(0,0,0,0.03);
+            border-radius: 12px;
+            padding: 8px 6px;
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+        [data-theme="dark"] .q-box {
+            background: rgba(255,255,255,0.05);
+        }
+        .q-box strong {
+            display: block;
+            font-size: 1.3rem;
+            color: var(--primary-color);
+            direction: ltr;
+        }
+        .q-status {
+            min-height: 44px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+        .q-status.ok {
+            color: #10b981;
+        }
+        .q-tip {
+            font-size: 0.78rem;
+            color: var(--text-light);
+            margin-top: 10px;
         }
 
         /* ===== تحسينات للموبايل ===== */
@@ -519,156 +785,242 @@
                 font-size: 16px;
             }
         }
-        @media (max-width: 480px) {
-            /* زر الوضع الليلي يتراكب على العنوان في الشاشات الضيقة */
-            #sleep {
-                position: static;
-                display: inline-block;
-                margin-bottom: 10px;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .main-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-        @media (min-width: 1024px) {
-            .main-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-            .card.wide-card {
-                grid-column: span 2;
-            }
-        }
     </style>
 </head>
 
 <body>
-<header class="header">
-    <button id="sleep">🌙 الوضع الليلي</button>
-    <div class="container">
-        <h1>🌙 حصن المسلم</h1>
-        <div class="developer-badge">✨ تم تطويره وبرمجته بكل حب بواسطة: زياد محمد سامى خليل ✨</div>
-        <p id="date-display" style="margin-top: 8px; font-size: 0.9rem;">جارٍ تحميل التاريخ...</p>
-        <p id="dynamic-greeting"></p>
-    </div>
-</header>
+<button id="sleep" type="button" aria-label="الوضع الليلي">🌙</button>
 
-<main class="container">
-    <div class="next-prayer-banner" id="next-prayer-box">
-        <i class="fa-solid fa-clock" style="color: var(--accent-color);"></i>
-        <span id="next-prayer-text">جارٍ حساب موعد الصلاة القادمة...</span>
-    </div>
+<!-- ===================== الرئيسية ===================== -->
+<div class="view active" id="view-home">
+    <header class="header">
+        <div class="container">
+            <h1>🌙 حصن المسلم</h1>
+            <div class="developer-badge">✨ تم تطويره وبرمجته بكل حب بواسطة: زياد محمد سامى خليل ✨</div>
+            <p id="date-display" style="margin-top: 8px; font-size: 0.9rem;">جارٍ تحميل التاريخ...</p>
+            <p id="dynamic-greeting"></p>
+        </div>
+    </header>
 
-    <div class="main-grid">
-        <section class="card">
-            <h2>📖 آية اليوم</h2>
-            <blockquote id="quran-verse">"وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لا يَحْتَسِبْ"</blockquote>
-            <p class="ayw">[سورة الطلاق: 2-3]</p>
-        </section>
+    <main class="container">
+        <div class="next-prayer-banner" id="next-prayer-box" data-go="prayers" role="button" tabindex="0">
+            <i class="fa-solid fa-clock" style="color: var(--accent-color);"></i>
+            <span id="next-prayer-text" class="js-next-prayer">جارٍ حساب موعد الصلاة القادمة...</span>
+        </div>
 
-        <section class="card">
-            <h2>⏰ مواقيت الصلاة</h2>
-            <div id="prayer-times" class="prayer-list">
-                <p><span>الفجر:</span> <span>--:--</span></p>
-                <p><span>الظهر:</span> <span>--:--</span></p>
-                <p><span>العصر:</span> <span>--:--</span></p>
-                <p><span>المغرب:</span> <span>--:--</span></p>
-                <p><span>العشاء:</span> <span>--:--</span></p>
+        <button type="button" id="install-btn" class="share-btn install-btn" hidden>
+            <i class="fa-solid fa-download"></i> تثبيت التطبيق
+        </button>
+
+        <div class="stack">
+            <section class="card">
+                <h2>📖 آية اليوم</h2>
+                <blockquote id="quran-verse">"وَمَنْ يَتَّقِ اللَّهَ يَجْعَلْ لَهُ مَخْرَجًا وَيَرْزُقْهُ مِنْ حَيْثُ لا يَحْتَسِبْ"</blockquote>
+                <p class="ayw">[سورة الطلاق: 2-3]</p>
+            </section>
+
+            <div class="shortcuts">
+                <button type="button" class="shortcut" data-go="azkar"><span class="ico">📖</span>الأذكار</button>
+                <button type="button" class="shortcut" data-go="tasbeeh"><span class="ico">📿</span>المسبحة</button>
+                <button type="button" class="shortcut" data-go="qibla"><span class="ico">🧭</span>القبلة</button>
+                <button type="button" class="shortcut" data-go="prayers"><span class="ico">⏰</span>المواقيت</button>
             </div>
-            <small style="color: var(--text-light); margin-top: 6px; font-size: 0.75rem;">* الأوقات تعتمد على موقعك الحالي</small>
-        </section>
 
-        <section class="card">
-            <h2>📻 إذاعة القرآن الكريم</h2>
-            <div class="radio">
-                <p>استمع بث مباشر لإذاعة القرآن الكريم من القاهرة</p>
-                <audio controls>
-                    <source src="https://stream.radiojar.com/8s5u5tpdtwzuv" type="audio/mp3">
-                </audio>
-            </div>
-        </section>
-
-        <section class="card">
-            <h2>📿 المسبحة الإلكترونية</h2>
-            <div class="counter-box">
-                <select id="sebha-dhkar" class="sebha-select">
-                    <option value="سبحان الله">سبحان الله</option>
-                    <option value="الحمد لله">الحمد لله</option>
-                    <option value="الله أكبر">الله أكبر</option>
-                    <option value="لا إله إلا الله">لا إله إلا الله</option>
-                    <option value="أستغفر الله">أستغفر الله</option>
-                    <option value="اللهم صل وسلم على نبينا محمد">الصلاة على النبي ﷺ</option>
-                </select>
-                <select id="sebha-goal" class="sebha-select">
-                    <option value="33">الهدف: 33</option>
-                    <option value="100">الهدف: 100</option>
-                    <option value="0">بدون هدف</option>
-                </select>
-                <span id="counter-value">0</span>
-                <span class="total-counter-display" id="goal-progress"></span>
-                <span class="total-counter-display">الإجمالي التراكمي: <strong id="total-counter-val">0</strong></span>
-                <div id="achievement-msg"></div>
-                <button id="counter-btn" class="btn-primary">سبحان الله</button>
-                <button id="reset-btn" class="btn-secondary">إعادة ضبط</button>
-            </div>
-        </section>
-
-        <section class="card wide-card" style="grid-column: 1 / -1;">
-            <h2>📿 الأذكار اليومية</h2>
-            <div class="tabs">
-                <button id="tab-sabah" class="tab-btn active">أذكار الصباح ☀️</button>
-                <button id="tab-masaa" class="tab-btn">أذكار المساء 🌙</button>
-            </div>
-            
-            <div class="progress-wrapper">
-                <div class="progress-label">
-                    <span>نسبة إنجاز الأذكار</span>
-                    <span id="progress-percent">0%</span>
+            <section class="card">
+                <h2 id="home-adhkar-title">📿 أذكار اليوم</h2>
+                <div class="progress-wrapper">
+                    <div class="progress-label">
+                        <span>نسبة الإنجاز</span>
+                        <span id="home-adhkar-percent">0%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div id="home-adhkar-bar" class="progress-bar"></div>
+                    </div>
                 </div>
-                <div class="progress-container">
-                    <div id="adhkar-progress" class="progress-bar"></div>
+                <button type="button" id="home-adhkar-btn" class="btn-primary" data-go="azkar" data-adhkar="sabah">افتح الأذكار</button>
+            </section>
+
+            <section class="card">
+                <h2>📻 إذاعة القرآن الكريم</h2>
+                <div class="radio">
+                    <p>استمع بث مباشر لإذاعة القرآن الكريم من القاهرة</p>
+                    <audio controls>
+                        <source src="https://stream.radiojar.com/8s5u5tpdtwzuv" type="audio/mp3">
+                    </audio>
                 </div>
-            </div>
+            </section>
 
-            <div id="adhkar-list-container" style="display: flex; flex-direction: column; gap: 10px; text-align: right; margin-top: 5px;"></div>
-            
-            <button id="toggle-adhkar-btn" class="btn-secondary" style="margin-top: 15px; font-weight: bold; border-color: var(--primary-color); color: var(--primary-color);">
-                ⬇️ عرض المزيد من الأذكار (الكل)
-            </button>
-        </section>
+            <details class="card support-details">
+                <summary>💬 صندوق الدعم والشكاوى والاقتراحات</summary>
+                <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 12px;">لديك اقتراح لتطوير الموقع، مشكلة تقنية، أو تريد إرسال رأيك للمطور؟ اختر التصنيف واكتب رسالتك لتصل مباشرة عبر واتساب لزياد.</p>
+                <div class="support-form">
+                    <input type="text" id="sender-name" placeholder="اسمك الكريم...">
+                    <select id="msg-type">
+                        <option value="اقتراح تطوير">💡 اقتراح لتطوير الموقع</option>
+                        <option value="مشكلة تقنية">🛠️ الإبلاغ عن مشكلة أو خطأ</option>
+                        <option value="رسالة شكر">🌹 كلمة شكر أو رأي</option>
+                    </select>
+                    <textarea id="sender-msg" placeholder="اكتب رسالتك بالتفصيل هنا..."></textarea>
+                    <button type="button" id="send-whatsapp-btn" class="btn-primary whatsapp-btn">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> إرسال عبر واتساب للمطور
+                    </button>
+                </div>
+            </details>
+        </div>
+    </main>
 
-        <section class="card wide-card" style="grid-column: 1 / -1;">
-            <h2>💬 صندوق الدعم والشكاوى والاقتراحات</h2>
-            <p style="color: var(--text-light); font-size: 0.85rem; margin-bottom: 12px;">لديك اقتراح لتطوير الموقع، مشكلة تقنية، أو تريد إرسال رأيك للمطور؟ اختر التصنيف واكتب رسالتك لتصل مباشرة عبر واتساب لزياد.</p>
-            <div class="support-form">
-                <input type="text" id="sender-name" placeholder="اسمك الكريم...">
-                <select id="msg-type">
-                    <option value="اقتراح تطوير">💡 اقتراح لتطوير الموقع</option>
-                    <option value="مشكلة تقنية">🛠️ الإبلاغ عن مشكلة أو خطأ</option>
-                    <option value="رسالة شكر">🌹 كلمة شكر أو رأي</option>
-                </select>
-                <textarea id="sender-msg" placeholder="اكتب رسالتك بالتفصيل هنا..."></textarea>
-                <button type="button" id="send-whatsapp-btn" class="btn-primary whatsapp-btn">
-                    <i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> إرسال عبر واتساب للمطور
-                </button>
-            </div>
-        </section>
+    <div class="container share-container">
+        <button id="share-site-btn" class="share-btn">
+            <i class="fa-solid fa-share-nodes"></i> مشاركة الرابط (نسخ)
+        </button>
+        <a href="#" id="share-whatsapp-link" target="_blank" class="share-btn share-whatsapp">
+            <i class="fa-brands fa-whatsapp"></i> مشاركة عبر واتساب
+        </a>
     </div>
-</main>
 
-<div class="container share-container">
-    <button type="button" id="install-btn" class="share-btn install-btn" hidden>
-        <i class="fa-solid fa-download"></i> تثبيت التطبيق
-    </button>
-    <button id="share-site-btn" class="share-btn">
-        <i class="fa-solid fa-share-nodes"></i> مشاركة الرابط (نسخ)
-    </button>
-    <a href="#" id="share-whatsapp-link" target="_blank" class="share-btn share-whatsapp">
-        <i class="fa-brands fa-whatsapp"></i> مشاركة عبر واتساب
-    </a>
+    <footer class="footer">
+        <p>صُمّم بكل حب لخدمة المسلمين 🚀 بواسطة/ <span style="color: var(--primary-color); font-weight: bold;">زياد محمد سامى خليل</span></p>
+        <p style="font-weight: 700; color: var(--primary-color);">جميع الحقوق محفوظة © 2026 زياد سامي</p>
+    </footer>
 </div>
+
+<!-- ===================== المواقيت ===================== -->
+<div class="view" id="view-prayers">
+    <main class="container">
+        <h1 class="view-title">⏰ مواقيت الصلاة</h1>
+        <div class="next-prayer-banner">
+            <i class="fa-solid fa-clock" style="color: var(--accent-color);"></i>
+            <span class="js-next-prayer">جارٍ حساب موعد الصلاة القادمة...</span>
+        </div>
+        <div class="stack">
+            <section class="card">
+                <h2>📍 المدينة</h2>
+                <select id="city-select" class="sebha-select" aria-label="اختيار المدينة"></select>
+                <p class="ayw loc-note" style="margin-top: 8px;"></p>
+            </section>
+
+            <section class="card">
+                <h2>⏰ مواقيت الصلاة</h2>
+                <div id="prayer-times" class="prayer-list">
+                    <p><span>الفجر:</span> <span>--:--</span></p>
+                    <p><span>الظهر:</span> <span>--:--</span></p>
+                    <p><span>العصر:</span> <span>--:--</span></p>
+                    <p><span>المغرب:</span> <span>--:--</span></p>
+                    <p><span>العشاء:</span> <span>--:--</span></p>
+                </div>
+                <small style="color: var(--text-light); margin-top: 6px; font-size: 0.75rem;">* الأوقات تعتمد على المدينة أو موقعك الحالي</small>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- ===================== الأذكار ===================== -->
+<div class="view" id="view-azkar">
+    <main class="container">
+        <h1 class="view-title">📖 الأذكار اليومية</h1>
+        <div class="stack">
+            <section class="card">
+                <div class="tabs">
+                    <button id="tab-sabah" class="tab-btn active">أذكار الصباح ☀️</button>
+                    <button id="tab-masaa" class="tab-btn">أذكار المساء 🌙</button>
+                </div>
+
+                <div class="progress-wrapper">
+                    <div class="progress-label">
+                        <span>نسبة إنجاز الأذكار</span>
+                        <span id="progress-percent">0%</span>
+                    </div>
+                    <div class="progress-container">
+                        <div id="adhkar-progress" class="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div id="adhkar-list-container" style="display: flex; flex-direction: column; gap: 10px; text-align: right; margin-top: 5px;"></div>
+
+                <button id="toggle-adhkar-btn" class="btn-secondary" style="margin-top: 15px; font-weight: bold; border-color: var(--primary-color); color: var(--primary-color);">
+                    ⬇️ عرض المزيد من الأذكار (الكل)
+                </button>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- ===================== المسبحة ===================== -->
+<div class="view" id="view-tasbeeh">
+    <main class="container">
+        <h1 class="view-title">📿 المسبحة الإلكترونية</h1>
+        <div class="stack">
+            <section class="card">
+                <div class="counter-box">
+                    <select id="sebha-dhkar" class="sebha-select">
+                        <option value="سبحان الله">سبحان الله</option>
+                        <option value="الحمد لله">الحمد لله</option>
+                        <option value="الله أكبر">الله أكبر</option>
+                        <option value="لا إله إلا الله">لا إله إلا الله</option>
+                        <option value="أستغفر الله">أستغفر الله</option>
+                        <option value="اللهم صل وسلم على نبينا محمد">الصلاة على النبي ﷺ</option>
+                    </select>
+                    <select id="sebha-goal" class="sebha-select">
+                        <option value="33">الهدف: 33</option>
+                        <option value="100">الهدف: 100</option>
+                        <option value="0">بدون هدف</option>
+                    </select>
+                    <span id="counter-value">0</span>
+                    <span class="total-counter-display" id="goal-progress"></span>
+                    <span class="total-counter-display">الإجمالي التراكمي: <strong id="total-counter-val">0</strong></span>
+                    <div id="achievement-msg"></div>
+                    <button id="counter-btn" class="btn-primary">سبحان الله</button>
+                    <button id="reset-btn" class="btn-secondary">إعادة ضبط</button>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- ===================== القبلة ===================== -->
+<div class="view" id="view-qibla">
+    <main class="container">
+        <h1 class="view-title">🧭 اتجاه القبلة</h1>
+        <div class="stack">
+            <section class="card">
+                <select id="city-select-q" class="sebha-select" aria-label="اختيار المدينة"></select>
+                <p class="ayw loc-note" style="margin-top: 8px;"></p>
+
+                <div class="qibla-stage">
+                <div class="qibla-wrap" id="qibla-wrap">
+                    <div class="q-pointer"></div>
+                    <div class="qibla-dial" id="qibla-dial">
+                        <span class="q-dir q-n">ش</span>
+                        <span class="q-dir q-e">ق</span>
+                        <span class="q-dir q-s">ج</span>
+                        <span class="q-dir q-w">غ</span>
+                        <div class="q-kaaba" id="q-kaaba"><span>🕋</span></div>
+                    </div>
+                    <div class="q-center"></div>
+                </div>
+                </div>
+
+                <div class="q-readouts">
+                    <div class="q-box">زاوية القبلة من الشمال<strong id="q-angle">--°</strong></div>
+                    <div class="q-box">اتجاه الموبايل<strong id="q-heading">--°</strong></div>
+                </div>
+
+                <div id="qibla-status" class="q-status">اضغط «فعّل البوصلة» ثم أمسك الموبايل مسطّحاً.</div>
+                <button type="button" id="qibla-start" class="btn-primary">🧭 فعّل البوصلة</button>
+                <p class="q-tip">ضع الموبايل مسطّحاً بعيداً عن المعادن والمغناطيس. لو الاتجاه مش دقيق، حرّك الموبايل على شكل رقم 8 لمعايرة الحساس. الاتجاه تقريبي ويعتمد على حساس موبايلك.</p>
+            </section>
+        </div>
+    </main>
+</div>
+
+<!-- ===================== شريط التنقل ===================== -->
+<nav class="tabbar" aria-label="التنقل الرئيسي">
+    <button type="button" class="tab-item active" data-go="home"><span class="ico">🏠</span><span>الرئيسية</span></button>
+    <button type="button" class="tab-item" data-go="prayers"><span class="ico">⏰</span><span>المواقيت</span></button>
+    <button type="button" class="tab-item" data-go="azkar"><span class="ico">📖</span><span>الأذكار</span></button>
+    <button type="button" class="tab-item" data-go="tasbeeh"><span class="ico">📿</span><span>المسبحة</span></button>
+    <button type="button" class="tab-item" data-go="qibla"><span class="ico">🧭</span><span>القبلة</span></button>
+</nav>
 
 <div id="update-banner" hidden>
     <span>🔄 يتوفر تحديث جديد للتطبيق</span>
@@ -678,32 +1030,30 @@
 
 <div id="toast-notification">الرجاء كتابة محتوى الرسالة أولاً قبل الإرسال! ⚠️</div>
 
-<footer class="footer">
-    <p>صُمّم بكل حب لخدمة المسلمين 🚀 بواسطة/ <span style="color: var(--primary-color); font-weight: bold;">زياد محمد سامى خليل</span></p>
-    <p style="font-weight: 700; color: #0b3c29;">جميع الحقوق محفوظة © 2026 زياد سامي</p>
-</footer>
-
 <script>
 const sleepBtn = document.getElementById('sleep');
 const currentTheme = localStorage.getItem('theme');
 
+function setThemeIcon(theme) {
+    sleepBtn.textContent = theme === 'dark' ? '☀️ الوضع النهاري' : '🌙 الوضع الليلي';
+    sleepBtn.setAttribute('aria-label', theme === 'dark' ? 'الوضع النهاري' : 'الوضع الليلي');
+}
+
 if (currentTheme) {
     document.documentElement.setAttribute('data-theme', currentTheme);
-    if (currentTheme === 'dark') {
-         sleepBtn.textContent = '☀️ الوضع النهاري';
-    }
 }
+setThemeIcon(currentTheme === 'dark' ? 'dark' : 'light');
 
 sleepBtn.addEventListener('click', () => {
     let theme = document.documentElement.getAttribute('data-theme');
     if (theme === 'dark') {
           document.documentElement.setAttribute('data-theme', 'light');
           localStorage.setItem('theme', 'light');
-          sleepBtn.textContent = '🌙 الوضع الليلي';
+          setThemeIcon('light');
     } else {
           document.documentElement.setAttribute('data-theme', 'dark');
           localStorage.setItem('theme', 'dark');
-          sleepBtn.textContent = '☀️ الوضع النهاري';
+          setThemeIcon('dark');
     }
 });
 
@@ -757,6 +1107,39 @@ const masaaAdhkar = [
     { text: "قراءة سورة الإخلاص، وفلق، والناس (ثلاث مرات لكل سورة)", count: 3, ref: "رواه أبو داود والترمذي" }
 ];
 
+// ===== المدن (للمواقيت والقبلة لو المستخدم مش عايز يحدد موقعه تلقائياً) =====
+const CITIES = {
+    cairo:      { n: 'القاهرة',       lat: 30.0444, lon: 31.2357 },
+    giza:       { n: 'الجيزة',        lat: 30.0131, lon: 31.2089 },
+    alex:       { n: 'الإسكندرية',    lat: 31.2001, lon: 29.9187 },
+    ismailia:   { n: 'الإسماعيلية',   lat: 30.5965, lon: 32.2715 },
+    portsaid:   { n: 'بورسعيد',       lat: 31.2653, lon: 32.3019 },
+    suez:       { n: 'السويس',        lat: 29.9668, lon: 32.5498 },
+    damietta:   { n: 'دمياط',         lat: 31.4165, lon: 31.8133 },
+    mansoura:   { n: 'المنصورة',      lat: 31.0409, lon: 31.3785 },
+    zagazig:    { n: 'الزقازيق',      lat: 30.5877, lon: 31.5020 },
+    tanta:      { n: 'طنطا',          lat: 30.7865, lon: 31.0004 },
+    shebin:     { n: 'شبين الكوم',    lat: 30.5503, lon: 31.0107 },
+    benha:      { n: 'بنها',          lat: 30.4660, lon: 31.1848 },
+    kafr:       { n: 'كفر الشيخ',     lat: 31.1107, lon: 30.9388 },
+    damanhour:  { n: 'دمنهور',        lat: 31.0341, lon: 30.4682 },
+    fayoum:     { n: 'الفيوم',        lat: 29.3084, lon: 30.8428 },
+    benisuef:   { n: 'بني سويف',      lat: 29.0661, lon: 31.0994 },
+    minya:      { n: 'المنيا',        lat: 28.1099, lon: 30.7503 },
+    asyut:      { n: 'أسيوط',         lat: 27.1783, lon: 31.1859 },
+    sohag:      { n: 'سوهاج',         lat: 26.5591, lon: 31.6948 },
+    qena:       { n: 'قنا',           lat: 26.1551, lon: 32.7160 },
+    luxor:      { n: 'الأقصر',        lat: 25.6872, lon: 32.6396 },
+    aswan:      { n: 'أسوان',         lat: 24.0889, lon: 32.8998 },
+    hurghada:   { n: 'الغردقة',       lat: 27.2579, lon: 33.8116 },
+    sharm:      { n: 'شرم الشيخ',     lat: 27.9158, lon: 34.3300 },
+    matruh:     { n: 'مرسى مطروح',    lat: 31.3543, lon: 27.2373 }
+};
+const CAIRO = CITIES.cairo;
+let cityChoice = localStorage.getItem('city_choice') || 'auto';
+if (cityChoice !== 'auto' && !CITIES[cityChoice]) cityChoice = 'auto';
+let locLabel = '';
+
 window.addEventListener('DOMContentLoaded', () => {
     const dateDisplay = document.getElementById('date-display');
     const greetingDisplay = document.getElementById('dynamic-greeting');
@@ -788,24 +1171,73 @@ window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('quran-verse').textContent = selectedVerse.text;
     document.querySelector('.ayw').textContent = selectedVerse.ref;
 
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(position => {
-            fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
-        }, () => {
-            fetchPrayerTimes(30.0444, 31.2357);
-        });
-    } else {
-        fetchPrayerTimes(30.0444, 31.2357);
-    }
+    populateCitySelects();
+    initLocation();
     updateShareWhatsAppLink();
 });
 
 let globalTimings = null;
 let timingsDate = null;
-let userCoords = { lat: 30.0444, lon: 31.2357 };
+let userCoords = { lat: CAIRO.lat, lon: CAIRO.lon };
 let countdownTimer = null;
 let lastRefreshAttempt = 0;
 const PRAYER_CACHE_KEY = 'prayer_cache';
+
+// ===== اختيار المدينة / تحديد الموقع =====
+function renderLocLabel() {
+    document.querySelectorAll('.loc-note').forEach(el => { el.textContent = locLabel ? `📍 ${locLabel}` : ''; });
+}
+
+function populateCitySelects() {
+    ['city-select', 'city-select-q'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (!sel) return;
+        let html = '<option value="auto">📍 موقعي الحالي (تلقائي)</option>';
+        Object.keys(CITIES).forEach(k => { html += `<option value="${k}">${CITIES[k].n}</option>`; });
+        sel.innerHTML = html;
+        sel.value = cityChoice;
+        sel.addEventListener('change', () => setCity(sel.value));
+    });
+}
+
+function setCity(value) {
+    cityChoice = (value !== 'auto' && CITIES[value]) ? value : 'auto';
+    localStorage.setItem('city_choice', cityChoice);
+    ['city-select', 'city-select-q'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (sel) sel.value = cityChoice;
+    });
+    initLocation();
+}
+
+function initLocation() {
+    if (cityChoice !== 'auto') {
+        const c = CITIES[cityChoice];
+        locLabel = c.n;
+        renderLocLabel();
+        fetchPrayerTimes(c.lat, c.lon);
+        return;
+    }
+    locLabel = 'جارٍ تحديد موقعك...';
+    renderLocLabel();
+    if (!navigator.geolocation) {
+        useCairoFallback();
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(position => {
+        locLabel = 'موقعك الحالي';
+        renderLocLabel();
+        fetchPrayerTimes(position.coords.latitude, position.coords.longitude);
+    }, () => {
+        useCairoFallback();
+    }, { timeout: 10000, maximumAge: 10 * 60 * 1000 });
+}
+
+function useCairoFallback() {
+    locLabel = 'القاهرة (تعذّر تحديد موقعك، اختر مدينتك من القائمة)';
+    renderLocLabel();
+    fetchPrayerTimes(CAIRO.lat, CAIRO.lon);
+}
 
 // الـ API قد يُرجع "05:12 (EET)" فنأخذ HH:MM فقط
 function cleanTime(t) {
@@ -818,6 +1250,11 @@ function formatTime(timeStr) {
     let period = h >= 12 ? 'م' : 'ص';
     h = h % 12 || 12;
     return `${h}:${minutes} ${period}`;
+}
+
+// يحدّث نص "متبقي على الصلاة" في كل الأماكن اللي بتعرضه (الرئيسية + المواقيت)
+function setNextPrayer(html) {
+    document.querySelectorAll('.js-next-prayer').forEach(el => { el.innerHTML = html; });
 }
 
 function renderPrayerTimes(timings) {
@@ -835,7 +1272,7 @@ function showPrayerError() {
     <p style="justify-content: center;">تعذّر تحميل مواقيت الصلاة 😔</p>
     <button type="button" id="retry-prayer-btn" class="btn-secondary" style="margin-top: 6px;">🔄 إعادة المحاولة</button>
     `;
-    document.getElementById('next-prayer-text').textContent = 'تعذّر حساب موعد الصلاة القادمة';
+    setNextPrayer('تعذّر حساب موعد الصلاة القادمة');
     document.getElementById('retry-prayer-btn').addEventListener('click', () => {
         fetchPrayerTimes(userCoords.lat, userCoords.lon);
     });
@@ -850,6 +1287,7 @@ function applyTimings(timings, dateStr) {
 
 function fetchPrayerTimes(lat, lon) {
     userCoords = { lat, lon };
+    updateQiblaAngle(); // زاوية القبلة تتحسب من نفس الإحداثيات
     lastRefreshAttempt = Date.now();
     const timestamp = Math.floor(Date.now() / 1000);
 
@@ -930,7 +1368,7 @@ function startPrayerCountdown() {
         if (hoursLeft > 0) timeStr += `${hoursLeft} ساعة و `;
         timeStr += `${minsLeft} دقيقة و ${secsLeft} ثانية`;
 
-        document.getElementById('next-prayer-text').innerHTML = `متبقي على صلاة <span>${nextPrayer.name}</span>: ${timeStr}`;
+        setNextPrayer(`متبقي على صلاة <span>${nextPrayer.name}</span>: ${timeStr}`);
     }, 1000);
 }
 
@@ -1068,6 +1506,31 @@ const progressPercent = document.getElementById('progress-percent');
 let showAllAdhkar = false;
 let currentActiveType = 'sabah';
 
+// نسبة إنجاز نوع أذكار (صباح/مساء) من المخزّن
+function adhkarPercentFor(type) {
+    const list = type === 'sabah' ? sabahAdhkar : masaaAdhkar;
+    let completed = 0;
+    list.forEach((item, index) => {
+        const saved = localStorage.getItem(`${type}_dhkar_${index}`);
+        const val = saved !== null ? parseInt(saved, 10) : item.count;
+        if (val === 0) completed++;
+    });
+    return Math.round((completed / list.length) * 100);
+}
+
+// كارت "أذكار اليوم" في الرئيسية: صباح قبل الظهر، ومساء بعده
+function updateHomeAdhkar() {
+    const h = new Date().getHours();
+    const type = (h >= 4 && h < 12) ? 'sabah' : 'masaa';
+    const pct = adhkarPercentFor(type);
+    document.getElementById('home-adhkar-title').textContent = type === 'sabah' ? '☀️ أذكار الصباح' : '🌙 أذكار المساء';
+    document.getElementById('home-adhkar-percent').textContent = `${pct}%`;
+    document.getElementById('home-adhkar-bar').style.width = `${pct}%`;
+    const btn = document.getElementById('home-adhkar-btn');
+    btn.dataset.adhkar = type;
+    btn.textContent = type === 'sabah' ? 'افتح أذكار الصباح' : 'افتح أذكار المساء';
+}
+
 function updateAdhkarProgress(list, type) {
     let completed = 0;
     list.forEach((item, index) => {
@@ -1078,6 +1541,7 @@ function updateAdhkarProgress(list, type) {
     let percentage = Math.round((completed / list.length) * 100);
     adhkarProgressBar.style.width = `${percentage}%`;
     progressPercent.textContent = `${percentage}%`;
+    updateHomeAdhkar();
 }
 
 function renderAdhkar(list, type) {
@@ -1199,16 +1663,21 @@ document.getElementById('send-whatsapp-btn').addEventListener('click', () => {
     window.open(`https://wa.me/201099779504?text=${textEncoded}`, '_blank');
 });
 
+// رابط المشاركة بدون #القسم اللي المستخدم واقف فيه
+function shareUrl() {
+    return window.location.href.split('#')[0];
+}
+
 function updateShareWhatsAppLink() {
-    const shareText = encodeURIComponent(`تفضل بزيارة موقع حصن المسلم الرائع للمطور زياد محمد 🌙✨\n${window.location.href}`);
+    const shareText = encodeURIComponent(`تفضل بزيارة موقع حصن المسلم الرائع للمطور زياد محمد 🌙✨\n${shareUrl()}`);
     document.getElementById('share-whatsapp-link').href = `https://wa.me/?text=${shareText}`;
 }
 
 document.getElementById('share-site-btn').addEventListener('click', () => {
-    navigator.clipboard.writeText(window.location.href).then(() => {
+    navigator.clipboard.writeText(shareUrl()).then(() => {
         showToast("تم نسخ رابط الموقع للحافظة بنجاح! 📋", false);
     }).catch(() => {
-        prompt("انسخ الرابط يدوياً:", window.location.href);
+        prompt("انسخ الرابط يدوياً:", shareUrl());
     });
 });
 
@@ -1252,6 +1721,206 @@ window.addEventListener('appinstalled', () => {
     showToast('تم تثبيت التطبيق بنجاح ✅');
 });
 // ===== نهاية زر التثبيت =====
+
+// ===== القبلة (البوصلة) =====
+const KAABA = { lat: 21.4225, lon: 39.8262 };
+const qWrap = document.getElementById('qibla-wrap');
+const qDial = document.getElementById('qibla-dial');
+const qKaaba = document.getElementById('q-kaaba');
+const qStatus = document.getElementById('qibla-status');
+const qAngleEl = document.getElementById('q-angle');
+const qHeadingEl = document.getElementById('q-heading');
+const qStart = document.getElementById('qibla-start');
+
+let qiblaAngle = 0;      // زاوية القبلة من الشمال (0-360)
+let qHeading = null;     // اتجاه الموبايل المُنعَّم
+let qSin = 0, qCos = 0;  // لتنعيم الزاوية بدون مشكلة 359 -> 0
+let dialRot = 0;         // دوران القرص التراكمي (عشان ما يلفّش لفة كاملة عند 0/360)
+let qActive = false;
+let qEventName = null;
+let qGotData = false;
+let qNoDataTimer = null;
+let qWasAligned = false;
+let qLastBuzz = 0;
+let qRaf = 0;
+
+const norm360 = (a) => ((a % 360) + 360) % 360;
+const angDiff = (a, b) => ((a - b + 540) % 360) - 180; // فرق موقّع بين -180 و 180
+
+// الاتجاه (bearing) من موقعك إلى الكعبة بالدرجات من الشمال
+function qiblaBearing(lat, lon) {
+    const rad = Math.PI / 180;
+    const p1 = lat * rad, p2 = KAABA.lat * rad, dl = (KAABA.lon - lon) * rad;
+    const y = Math.sin(dl) * Math.cos(p2);
+    const x = Math.cos(p1) * Math.sin(p2) - Math.sin(p1) * Math.cos(p2) * Math.cos(dl);
+    return norm360(Math.atan2(y, x) / rad);
+}
+
+function updateQiblaAngle() {
+    qiblaAngle = qiblaBearing(userCoords.lat, userCoords.lon);
+    qKaaba.style.transform = `rotate(${qiblaAngle}deg)`;
+    qAngleEl.textContent = `${Math.round(qiblaAngle)}°`;
+    renderLocLabel();
+    if (qHeading !== null) renderCompass();
+}
+
+// اتجاه الجهاز (بالدرجات من الشمال) من alpha/beta/gamma.
+// موبايل مسطّح: نستخدم اتجاه الحافة العلوية. موبايل واقف: نستخدم اتجاه ضهر الموبايل (الكاميرا).
+// ونختار الأقوى منهم، عشان ما يحصلش قسمة على صفر لما الموبايل يبقى مسطّح تماماً.
+function compassHeading(alpha, beta, gamma) {
+    const rad = Math.PI / 180;
+    const a = (alpha || 0) * rad, b = (beta || 0) * rad, g = (gamma || 0) * rad;
+    const cA = Math.cos(a), sA = Math.sin(a), cB = Math.cos(b), sB = Math.sin(b), cG = Math.cos(g), sG = Math.sin(g);
+    const topE = -cB * sA, topN = cA * cB;                        // الحافة العلوية
+    const backE = -(cA * sG + sA * sB * cG), backN = -(sA * sG - cA * sB * cG); // ضهر الموبايل
+    const useTop = Math.hypot(topE, topN) >= Math.hypot(backE, backN);
+    const east = useTop ? topE : backE, north = useTop ? topN : backN;
+    return norm360(Math.atan2(east, north) / rad);
+}
+
+function renderCompass() {
+    qRaf = 0;
+    if (qHeading === null) return;
+
+    // لفّ القرص بالعكس عشان الشمال يفضل في مكانه الحقيقي
+    const target = -qHeading;
+    dialRot += angDiff(target, dialRot);
+    qDial.style.transform = `rotate(${dialRot}deg)`;
+    qHeadingEl.textContent = `${Math.round(qHeading)}°`;
+
+    const diff = angDiff(qiblaAngle, qHeading); // موجب = القبلة على يمينك
+    const aligned = Math.abs(diff) <= 5;
+    qWrap.classList.toggle('aligned', aligned);
+    qStatus.classList.toggle('ok', aligned);
+
+    if (aligned) {
+        qStatus.textContent = '✅ أنت تواجه القبلة';
+        if (!qWasAligned && Date.now() - qLastBuzz > 1500) {
+            qLastBuzz = Date.now();
+            if (navigator.vibrate) navigator.vibrate(60);
+        }
+    } else {
+        const d = Math.round(Math.abs(diff));
+        qStatus.textContent = diff > 0 ? `لفّ يميناً حوالي ${d}°` : `لفّ يساراً حوالي ${d}°`;
+    }
+    qWasAligned = aligned;
+}
+
+function onOrientation(e) {
+    let h = null;
+    if (typeof e.webkitCompassHeading === 'number' && !isNaN(e.webkitCompassHeading)) {
+        h = e.webkitCompassHeading; // آيفون: جاهز بالدرجات من الشمال
+    } else if (e.alpha !== null && e.alpha !== undefined && (e.absolute === true || e.type === 'deviceorientationabsolute')) {
+        h = compassHeading(e.alpha, e.beta, e.gamma);
+    }
+    if (h === null || isNaN(h)) return;
+
+    qGotData = true;
+    const r = h * Math.PI / 180;
+    if (qHeading === null) {
+        qSin = Math.sin(r); qCos = Math.cos(r);
+    } else {
+        qSin = qSin * 0.8 + Math.sin(r) * 0.2;
+        qCos = qCos * 0.8 + Math.cos(r) * 0.2;
+    }
+    qHeading = norm360(Math.atan2(qSin, qCos) * 180 / Math.PI);
+    if (!qRaf) qRaf = requestAnimationFrame(renderCompass);
+}
+
+async function startCompass() {
+    qStatus.classList.remove('ok');
+    qStatus.textContent = 'جارٍ تشغيل الحساس...';
+    try {
+        // آيفون: لازم نطلب الإذن من المستخدم بعد ضغطة زر
+        if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+            const res = await DeviceOrientationEvent.requestPermission();
+            if (res !== 'granted') {
+                qStatus.textContent = 'تم رفض إذن الحساس. فعّله من إعدادات المتصفح ثم أعد المحاولة.';
+                return;
+            }
+        }
+    } catch (err) {
+        qStatus.textContent = 'تعذّر طلب إذن الحساس. تأكد إن الموقع مفتوح بـ HTTPS.';
+        return;
+    }
+
+    stopCompass(true);
+    qEventName = ('ondeviceorientationabsolute' in window) ? 'deviceorientationabsolute' : 'deviceorientation';
+    window.addEventListener(qEventName, onOrientation, true);
+    qActive = true;
+    qGotData = false;
+    qStart.textContent = '⏹ إيقاف البوصلة';
+
+    clearTimeout(qNoDataTimer);
+    qNoDataTimer = setTimeout(() => {
+        if (!qGotData) {
+            qStatus.textContent = `جهازك أو متصفحك مش بيدعم حساس الاتجاه. القبلة على زاوية ${Math.round(qiblaAngle)}° من الشمال، تقدر تستخدمها مع بوصلة عادية.`;
+        }
+    }, 2500);
+}
+
+function stopCompass(keepState) {
+    if (qEventName) window.removeEventListener(qEventName, onOrientation, true);
+    qEventName = null;
+    clearTimeout(qNoDataTimer);
+    if (qRaf) { cancelAnimationFrame(qRaf); qRaf = 0; }
+    qActive = false;
+    if (!keepState) {
+        qStart.textContent = '🧭 فعّل البوصلة';
+        qHeading = null;
+        qWrap.classList.remove('aligned');
+        qStatus.classList.remove('ok');
+        qStatus.textContent = 'اضغط «فعّل البوصلة» ثم أمسك الموبايل مسطّحاً.';
+        qHeadingEl.textContent = '--°';
+        dialRot = 0;
+        qDial.style.transform = 'rotate(0deg)';
+    }
+}
+
+qStart.addEventListener('click', () => {
+    if (qActive) stopCompass(); else startCompass();
+});
+// لو التطبيق راح للخلفية نوقف البوصلة (توفير بطارية)
+document.addEventListener('visibilitychange', () => {
+    if (document.hidden && qActive) stopCompass();
+});
+updateQiblaAngle();
+// ===== نهاية القبلة =====
+
+// ===== التنقل بين الصفحات (شريط التنقل اللي تحت) =====
+const VIEWS = ['home', 'prayers', 'azkar', 'tasbeeh', 'qibla'];
+
+function go(name, opts) {
+    opts = opts || {};
+    if (!VIEWS.includes(name)) name = 'home';
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
+    document.querySelectorAll('.tab-item').forEach(b => {
+        const on = b.dataset.go === name;
+        b.classList.toggle('active', on);
+        if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+    });
+    if (name !== 'qibla') stopCompass();
+    if (opts.adhkar === 'masaa') tabMasaa.click();
+    else if (opts.adhkar === 'sabah') tabSabah.click();
+    if (name === 'home') updateHomeAdhkar();
+    window.scrollTo(0, 0);
+    try {
+        history.replaceState(null, '', name === 'home' ? location.pathname + location.search : '#' + name);
+    } catch (e) {}
+}
+
+document.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-go]');
+    if (t) go(t.dataset.go, { adhkar: t.dataset.adhkar });
+});
+document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const t = e.target.closest && e.target.closest('[data-go][role="button"]');
+    if (t) go(t.dataset.go);
+});
+window.addEventListener('hashchange', () => go(location.hash.slice(1)));
+go(location.hash.slice(1));
+// ===== نهاية التنقل =====
 
 // ===== تسجيل الـ Service Worker وإشعار التحديث =====
 // الـ Service Worker يجعل الموقع يعمل بدون إنترنت (يحتاج HTTPS أو localhost)
