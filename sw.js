@@ -1,5 +1,5 @@
 // غيّر رقم النسخة عند أي تعديل على الملفات، ليأخذ المستخدمون النسخة الجديدة
-const VERSION = 'hisn-v6';
+const VERSION = 'hisn-v7';
 
 const CORE_FILES = [
   './',
