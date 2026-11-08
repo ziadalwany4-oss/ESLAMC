@@ -1,5 +1,5 @@
 // غيّر رقم النسخة عند أي تعديل على الملفات، ليأخذ المستخدمون النسخة الجديدة
-const VERSION = 'hisn-v7';
+const VERSION = 'hisn-v8';
 
 const CORE_FILES = [
   './',
@@ -16,9 +16,15 @@ const CDN_HOSTS = [
   'cdnjs.cloudflare.com'
 ];
 
+// لو الإنترنت بطيء جدًا نفتح من الحفظ بعد المدة دي (بالمللي ثانية)
+const NAVIGATE_TIMEOUT = 4000;
+
 self.addEventListener('install', (event) => {
   event.waitUntil(
-    caches.open(VERSION).then((cache) => cache.addAll(CORE_FILES))
+    caches.open(VERSION).then((cache) =>
+      // cache: 'reload' عشان نجيب الملفات الجديدة فعلًا ومن كاش المتصفح (GitHub Pages بيحفظ 10 دقايق)
+      cache.addAll(CORE_FILES.map((url) => new Request(url, { cache: 'reload' })))
+    )
   );
   // لا نستخدم skipWaiting هنا: النسخة الجديدة تنتظر حتى يضغط المستخدم "تحديث الآن"
 });
@@ -48,18 +54,28 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(request.url);
 
   // 1) فتح الصفحة: من الإنترنت أولاً (لنحصل على آخر تحديث)، وإلا من الحفظ
+  //    ولو الإنترنت بطيء أكتر من NAVIGATE_TIMEOUT نفتح من الحفظ فورًا
   if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok) {
-            const copy = response.clone();
-            caches.open(VERSION).then((cache) => cache.put('./index.html', copy));
-          }
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
+    const network = fetch(request).then((response) => {
+      if (response.ok) {
+        const copy = response.clone();
+        caches.open(VERSION).then((cache) => cache.put('./index.html', copy));
+      }
+      return response;
+    });
+
+    const timeout = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error('timeout')), NAVIGATE_TIMEOUT)
     );
+
+    event.respondWith(
+      Promise.race([network, timeout]).catch(() =>
+        // لو مفيش حفظ لسه (أول فتحة) نستنى الإنترنت لحد ما يخلص
+        caches.match('./index.html').then((cached) => cached || network)
+      )
+    );
+    // نخلي الـ Service Worker شغال لحد ما التحميل في الخلفية يخلص ويتحفظ
+    event.waitUntil(network.catch(() => {}));
     return;
   }
 
@@ -99,4 +115,5 @@ self.addEventListener('fetch', (event) => {
   }
 
   // 4) أي شيء آخر (مواقيت الصلاة، بث الإذاعة، Google Analytics) يمر كما هو بدون حفظ
+  //    ملاحظة: مواقيت الصلاة بتتحفظ جوه الصفحة نفسها (localStorage) مش هنا
 });
